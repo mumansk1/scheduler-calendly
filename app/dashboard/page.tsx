@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -10,7 +9,9 @@ import {
   ChevronLeft, 
   ChevronRight, 
   CalendarDays,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles,
+  Crown
 } from 'lucide-react';
 
 // --- Types & Mock Data ---
@@ -90,60 +91,71 @@ export default function ScheduleSync() {
         <div className="bg-white rounded-[32px] shadow-sm border border-slate-200 overflow-hidden">
           
           {/* Header Section */}
-          <section className="bg-slate-50/50 border-b border-slate-100 p-8 pb-6 text-center">
+          <section className="bg-slate-50/50 border-b border-slate-100 p-8 pb-6">
             <div className="max-w-[700px] mx-auto">
-              <h2 className="text-2xl font-extrabold mb-5">Find Shared Availability</h2>
+              <h2 className="text-2xl font-extrabold mb-5 text-center">Find Shared Availability</h2>
               
-              {/* People Selector - Full Width */}
-              <div className="relative mb-4">
+              {/* People Selector - Centered */}
+              <div className="relative mb-4 max-w-md mx-auto">
                 <button 
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="w-full flex items-center justify-between bg-white border-2 border-slate-200 rounded-2xl px-5 py-3.5 font-bold hover:border-indigo-500 transition-all"
+                  className="w-full flex items-center justify-center bg-white border-2 border-slate-200 rounded-2xl px-5 py-3.5 font-bold hover:border-indigo-500 transition-all"
                 >
-                  <span className="flex items-center gap-2 mx-auto">
+                  <span className="flex items-center gap-2">
                     <CalendarCheck className="text-indigo-600 w-5 h-5" /> 
                     <span>
                       {selectedIds.length === 0 ? 'Select people' : 
                        `${selectedPeople.map(p => p.name.split(' ')[0]).join(' & ')}`}
                     </span>
                   </span>
-                  <ChevronDown className={`text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`text-slate-400 transition-transform ml-2 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute z-20 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl p-2">
-                    {PEOPLE.map(person => {
-                      const isSelected = selectedIds.includes(person.id);
-                      const isMaxed = selectedIds.length >= MAX_SELECTION && !isSelected;
-                      return (
-                        <label 
-                          key={person.id}
-                          className={`group flex items-center gap-3 p-3 rounded-xl transition-colors relative
-                            ${isMaxed ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
-                        >
-                          <input 
-                            type="checkbox" 
-                            checked={isSelected}
-                            disabled={isMaxed}
-                            onChange={() => togglePerson(person.id)}
-                            className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
-                          />
-                          <div className="flex flex-col flex-1">
-                            <span className="font-semibold">{person.name}</span>
-                            <span className="text-[10px] text-slate-400 uppercase font-bold">{person.country}</span>
-                          </div>
-                          {isMaxed && <span className="text-xs text-amber-600 font-bold">Max 4</span>}
-                          {person.id === 'emma' && (
-                            <div className="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-800 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap">
-                              Need more? Upgrade to Pro →
+                  <div className="absolute z-20 mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-xl p-3">
+                    <div className="max-w-[280px] mx-auto">
+                      {PEOPLE.map(person => {
+                        const isSelected = selectedIds.includes(person.id);
+                        const isMaxed = selectedIds.length >= MAX_SELECTION && !isSelected;
+                        return (
+                          <label 
+                            key={person.id}
+                            className={`group flex items-center gap-3 p-2.5 rounded-xl transition-colors
+                              ${isMaxed ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
+                          >
+                            <input 
+                              type="checkbox" 
+                              checked={isSelected}
+                              disabled={isMaxed}
+                              onChange={() => togglePerson(person.id)}
+                              className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 flex-shrink-0"
+                            />
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              <span className="font-semibold text-sm">{person.name}</span>
+                              <span className="text-[10px] text-slate-400 font-bold whitespace-nowrap">{person.country}</span>
                             </div>
-                          )}
-                        </label>
-                      );
-                    })}
+                            {isMaxed && <span className="text-xs text-amber-600 font-bold whitespace-nowrap">Max 4</span>}
+                          </label>
+                        );
+                      })}
+                    </div>
                     <div className="mt-2 pt-2 border-t border-slate-100 px-3 py-2 text-xs text-slate-500 text-center font-medium">
                       {selectedIds.length}/{MAX_SELECTION} selected
                     </div>
+                    
+                    {/* Upsell Banner */}
+                    {selectedIds.length >= MAX_SELECTION && (
+                      <div className="mt-2 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-3 text-white">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Crown className="w-4 h-4" />
+                          <span className="font-bold text-sm">Upgrade to Pro</span>
+                        </div>
+                        <p className="text-xs opacity-90 mb-2">Compare unlimited schedules, unlock week & month views</p>
+                        <button className="w-full bg-white text-indigo-600 font-bold text-xs py-2 rounded-lg hover:bg-indigo-50 transition-all">
+                          Upgrade Now →
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -238,9 +250,21 @@ export default function ScheduleSync() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-                <CalendarDays className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <p className="text-slate-500 font-medium capitalize">{view} view coming soon</p>
+              <div className="text-center py-20 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl border-2 border-dashed border-indigo-200 relative overflow-hidden">
+                <div className="absolute inset-0 bg-white/40 backdrop-blur-sm"></div>
+                <div className="relative z-10">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mb-4 mx-auto">
+                    <Sparkles className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-black text-slate-800 mb-2">Unlock {view.charAt(0).toUpperCase() + view.slice(1)} View</h3>
+                  <p className="text-slate-600 mb-4 max-w-sm mx-auto">
+                    Upgrade to Pro to compare schedules across entire {view === 'week' ? 'weeks' : 'months'} and find the perfect meeting time faster.
+                  </p>
+                  <button className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold px-6 py-3 rounded-xl hover:shadow-lg transition-all">
+                    <Crown className="w-4 h-4" />
+                    Upgrade to Pro
+                  </button>
+                </div>
               </div>
             )}
           </section>
