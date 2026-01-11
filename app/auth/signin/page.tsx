@@ -91,9 +91,9 @@ export default function SignInPage() {
           <div className="bg-teal-100 p-4 rounded-full mb-4">
             <Calendar className="w-10 h-10 text-teal-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800">Appointment Manager</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Schedule Sync</h1>
           <p className="text-gray-600 text-center mt-2">
-            Manage your therapy appointments with ease
+            Find schedule overlap fast and easy.
           </p>
         </div>
 
