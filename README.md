@@ -18,3 +18,16 @@ npm start - Run production build
 npm run lint - Check for code issues
 
 # Publishing with Vercel (GitHub only hosts static pages)
+https://scheduler-calendly.vercel.app/
+
+How to Generate the Secret
+Information from outside the sources: To create a secure, high-entropy secret, you should use a terminal command rather than making one up manually. You can use the following methods:
+1. Using Terminal (Recommended): Open your terminal (Command Prompt, Terminal, or PowerShell) and run:
+    ◦ openssl rand -base64 32
+    ◦ This will output a 32-character random string that you can copy and use.
+2. Using JavaScript/Node.js: If you don't have OpenSSL, you can run this in your terminal:
+    ◦ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+
+
+# Database
+npx prisma studio
