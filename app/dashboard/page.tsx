@@ -3,12 +3,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { 
-  CalendarCheck, 
-  ChevronDown, 
-  Globe, 
-  ChevronLeft, 
-  ChevronRight, 
+import {
+  CalendarCheck,
+  ChevronDown,
+  Globe,
+  ChevronLeft,
+  ChevronRight,
   CheckCircle2,
   Crown,
   Calendar,
@@ -92,9 +92,11 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
+      {/* Background Glow */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b0764,transparent)] pointer-events-none" />
 
-      <aside className="hidden lg:block fixed left-0 top-0 h-full w-64 bg-black border-r border-white/10 z-50">
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:block fixed left-0 top-0 h-full w-64 bg-transparent border-r border-white/10 z-50">
         <div className="p-6">
           <div className="flex items-center gap-2 mb-8">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center"><Calendar className="w-5 h-5 text-white" /></div>
@@ -112,22 +114,27 @@ export default function DashboardPage() {
         </div>
       </aside>
 
+      {/* Main content */}
       <main className="lg:ml-64 relative min-h-screen p-4 md:p-8">
         <div className="max-w-5xl mx-auto">
+
+          {/* Header / Selectors Area */}
           <div className="space-y-6 mb-8">
             <div className="flex flex-col items-center text-center">
               <h2 className="text-3xl font-extrabold tracking-tight mb-2">Find Shared Availability</h2>
               <p className="text-gray-400 text-sm">Compare schedules and find the perfect slot.</p>
             </div>
 
+            {/* Stretched Selectors */}
             <div className="grid grid-cols-1 gap-4">
+              {/* People Dropdown */}
               <div className="relative w-full" ref={dropdownRef}>
-                <button 
+                <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="w-full flex items-center justify-between bg-black border border-white/20 rounded-xl px-5 py-4 font-bold hover:border-white/40 transition-all"
                 >
                   <div className="flex items-center gap-3">
-                    <CalendarCheck className="text-purple-400 w-5 h-5" /> 
+                    <CalendarCheck className="text-purple-400 w-5 h-5" />
                     <span>{selectedIds.length === 0 ? 'Select people' : selectedPeople.map(p => p.name.split(' ')[0]).join(' & ')}</span>
                   </div>
                   <ChevronDown className={`text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -148,27 +155,31 @@ export default function DashboardPage() {
                 )}
               </div>
 
+              {/* Date, View & Timezone Controls in one row - Aligned to Calendar */}
               <div className="flex flex-col md:flex-row items-center gap-4 w-full">
-                <div className="flex items-center bg-black border border-white/20 rounded-xl px-4 py-2 max-w-xs w-full md:w-auto">
+                {/* Date Selector - Less wide */}
+                <div className="flex items-center bg-black border border-white/20 rounded-xl px-4 py-2 w-full md:w-auto">
                   <button onClick={() => navigateDate(-1)} className="p-2 hover:bg-white/10 rounded-full transition"><ChevronLeft className="w-5 h-5" /></button>
-                  <span className="font-bold text-lg mx-4 whitespace-nowrap">{currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                  <span className="font-bold text-lg mx-4 whitespace-nowrap flex-1 text-center">{currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                   <button onClick={() => navigateDate(1)} className="p-2 hover:bg-white/10 rounded-full transition"><ChevronRight className="w-5 h-5" /></button>
                 </div>
-                
-                <div className="flex bg-black border border-white/20 rounded-xl p-1 flex-grow md:flex-grow-0">
+
+                {/* View Toggle - Stretched */}
+                <div className="flex bg-black border border-white/20 rounded-xl p-1 flex-grow">
                   {(['day', 'week', 'month'] as const).map((v) => (
-                    <button key={v} onClick={() => setView(v)} className={`px-6 py-2 rounded-lg font-bold text-sm transition-all ${view === v ? 'bg-white text-black' : 'text-gray-400 hover:text-white'}`}>
+                    <button key={v} onClick={() => setView(v)} className={`flex-1 px-6 py-2 rounded-lg font-bold text-sm transition-all ${view === v ? 'bg-white text-black' : 'text-gray-400 hover:text-white'}`}>
                       {v.charAt(0).toUpperCase() + v.slice(1)}
                     </button>
                   ))}
                 </div>
 
-                <div className="inline-flex items-center gap-1.5 text-xs text-gray-400 bg-black border border-white/20 rounded-xl px-3 py-2 whitespace-nowrap">
+                {/* Timezone Selector */}
+                <div className="inline-flex items-center gap-1.5 text-xs text-gray-400 bg-black border border-white/20 rounded-xl px-3 py-2 whitespace-nowrap w-full md:w-auto">
                   <Globe className="w-4 h-4" />
-                  <select 
+                  <select
                     value={selectedTz}
                     onChange={(e) => setSelectedTz(e.target.value)}
-                    className="bg-transparent text-xs text-gray-300 font-medium focus:outline-none cursor-pointer hover:text-purple-400 transition-colors"
+                    className="bg-transparent text-xs text-gray-300 font-medium focus:outline-none cursor-pointer hover:text-purple-400 transition-colors w-full"
                   >
                     <option value="EST" className="bg-black">EST (New York)</option>
                     <option value="IST" className="bg-black">IST (Mumbai)</option>
@@ -179,6 +190,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
+              {/* Mode Toggle */}
               <div className="flex justify-end items-center gap-3 mt-2">
                 <div className="inline-flex bg-white/10 p-1 rounded-lg border border-white/20">
                   <button onClick={() => setDisplayMode('full')} className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${displayMode === 'full' ? 'bg-white/20 text-white' : 'text-gray-400'}`}>Full Day</button>
@@ -188,6 +200,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* Comparison Grid */}
           <section className="relative z-10">
             {view === 'day' ? (
               <div className={`grid grid-cols-1 gap-6 ${selectedIds.length > 1 ? 'md:grid-cols-2 lg:grid-cols-' + selectedIds.length : ''}`}>
@@ -224,7 +237,7 @@ export default function DashboardPage() {
                           const slot = freeSlots[i];
                           const isMatch = slot && matches.includes(person.schedule[dayIdx].indexOf(slot));
                           return (
-                            <div key={i} className={`aspect-square rounded-lg border flex items-center justify-center p-1 text-center transition-all ${slot ? 'bg-emerald-600/20 border-emerald-600/40' : 'bg-white/5 border-white/5 opacity-20'}`}>
+                            <div key={i} className={`aspect-square rounded-lg border flex items-center justify-center p-1 text-center transition-all relative ${slot ? 'bg-emerald-600/20 border-emerald-600/40' : 'bg-white/5 border-white/5 opacity-20'}`}>
                               {isMatch && (
                                 <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[8px] font-black px-2 py-0.5 rounded shadow-lg z-10 flex items-center gap-1">
                                   <CheckCircle2 className="w-2 h-2" />
@@ -243,7 +256,7 @@ export default function DashboardPage() {
               <div className="py-20 text-center border-2 border-dashed border-white/10 rounded-3xl bg-white/5">
                 <Crown className="w-10 h-10 text-purple-500 mx-auto mb-4" />
                 <h3 className="text-xl font-bold mb-2">Upgrade to Pro</h3>
-                <p className="text-gray-400 text-sm mb-6">Unlock {view} views and unlimited comparisons.</p>
+                <p className="text-gray-400 text-sm mb-6">Unlock {view} views and unlimited comparisons.</p>\
                 <button className="bg-purple-600 text-white px-6 py-2 rounded-full font-bold hover:bg-purple-700 transition">Upgrade Now</button>
               </div>
             )}

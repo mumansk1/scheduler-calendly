@@ -32,6 +32,7 @@ Information from outside the sources: To create a secure, high-entropy secret, y
 # Database
 npx prisma studio
 
+# Domains
 1. https://Name.com - https://www.name.com/domain-search
 2. GoDaddy - https://www.godaddy.com/domainsearch
 3. Bluehost - https://www.bluehost.com/domain-search
