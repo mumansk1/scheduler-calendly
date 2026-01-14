@@ -22,14 +22,14 @@ import {
 type Slot = { time: string; free: boolean };
 type Person = { id: string; name: string; country: string; schedule: Slot[][] };
 
-const MAX_SELECTION = 4;
+const MAX_SELECTION = 3;
 
 const PEOPLE: Person[] = [
-  { id: 'alice', name: 'Alice (You)', country: '🇺🇸 USA (EST)', schedule: Array(7).fill(null).map(() => Array.from({length: 24}, (_, h) => ({ time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`, free: ![9, 10, 14, 15].includes(h) }))) },
-  { id: 'bob', name: 'Bob', country: '🇮🇳 India (IST)', schedule: Array(7).fill(null).map(() => Array.from({length: 24}, (_, h) => ({ time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`, free: ![10, 11, 15, 16].includes(h) }))) },
-  { id: 'carol', name: 'Carol', country: '🇬🇧 UK (GMT)', schedule: Array(7).fill(null).map(() => Array.from({length: 24}, (_, h) => ({ time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`, free: ![9, 13, 14].includes(h) }))) },
-  { id: 'david', name: 'David', country: '🇺🇸 USA (West) (PST)', schedule: Array(7).fill(null).map(() => Array.from({length: 24}, (_, h) => ({ time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`, free: ![8, 9, 15].includes(h) }))) },
-  { id: 'emma', name: 'Emma', country: '🇦🇺 Australia (AEST)', schedule: Array(7).fill(null).map(() => Array.from({length: 24}, (_, h) => ({ time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`, free: ![10, 11, 15, 16].includes(h) }))) },
+  { id: 'alice', name: 'Alice Martinez', country: '🇺🇸 USA (EST)', schedule: Array(7).fill(null).map(() => Array.from({length: 24}, (_, h) => ({ time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`, free: ![9, 10, 14, 15].includes(h) }))) },
+  { id: 'bob', name: 'Bob Johnson', country: '🇮🇳 India (IST)', schedule: Array(7).fill(null).map(() => Array.from({length: 24}, (_, h) => ({ time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`, free: ![10, 11, 15, 16].includes(h) }))) },
+  { id: 'carol', name: 'Carol Smith', country: '🇬🇧 UK (GMT)', schedule: Array(7).fill(null).map(() => Array.from({length: 24}, (_, h) => ({ time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`, free: ![9, 13, 14].includes(h) }))) },
+  { id: 'david', name: 'David Wilson', country: '🇺🇸 USA (West) (PST)', schedule: Array(7).fill(null).map(() => Array.from({length: 24}, (_, h) => ({ time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`, free: ![8, 9, 15].includes(h) }))) },
+  { id: 'emma', name: 'Emma Thompson', country: '🇦🇺 Australia (AEST)', schedule: Array(7).fill(null).map(() => Array.from({length: 24}, (_, h) => ({ time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`, free: ![10, 11, 15, 16].includes(h) }))) },
 ];
 
 export default function DashboardPage() {
@@ -37,7 +37,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date(2026, 0, 13));
   const [selectedTz, setSelectedTz] = useState('EST');
-  const [selectedIds, setSelectedIds] = useState<string[]>(['alice', 'bob']);
+  const [selectedIds, setSelectedIds] = useState<string[]>(['alice']);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [view, setView] = useState<'day' | 'week' | 'month'>('day');
   const [displayMode, setDisplayMode] = useState<'full' | 'free'>('full');
@@ -76,6 +76,7 @@ export default function DashboardPage() {
     return `${time} ${period} - ${nextHour === 0 ? 12 : nextHour}:00 ${nextPeriod}`;
   };
 
+  // Helper to find matches (free slots common to all selected people)
   const getMatches = () => {
     if (selectedPeople.length < 2) return [];
     const firstPersonSlots = selectedPeople[0].schedule[dayIdx];
@@ -135,7 +136,12 @@ export default function DashboardPage() {
                 >
                   <div className="flex items-center gap-3">
                     <CalendarCheck className="text-purple-400 w-5 h-5" />
-                    <span>{selectedIds.length === 0 ? 'Select people' : selectedPeople.map(p => p.name.split(' ')[0]).join(' & ')}</span>
+                    <span>{selectedIds.length === 0 ? 'Select people' : selectedPeople.map(p => {
+                      const names = p.name.split(' ');
+                      const firstName = names[0];
+                      const lastInitial = names.length > 1 ? names[1][0] + '.' : '';
+                      return `${firstName} ${lastInitial}`;
+                    }).join(' & ')}</span>
                   </div>
                   <ChevronDown className={`text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
@@ -143,43 +149,58 @@ export default function DashboardPage() {
                 {isDropdownOpen && (
                   <div className="absolute z-50 mt-2 w-full bg-black border border-white/20 rounded-xl shadow-2xl p-2">
                     {PEOPLE.map(person => (
-                      <label key={person.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition-colors">
-                        <input type="checkbox" checked={selectedIds.includes(person.id)} onChange={() => {
-                          setSelectedIds(prev => prev.includes(person.id) ? prev.filter(i => i !== person.id) : prev.length < MAX_SELECTION ? [...prev, person.id] : prev);
-                        }} className="w-4 h-4 rounded border-gray-600 text-purple-600 focus:ring-purple-500" />
+                      <label key={person.id} className={`flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition-colors ${selectedIds.length >= MAX_SELECTION && !selectedIds.includes(person.id) ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedIds.includes(person.id)} 
+                          onChange={() => {
+                            if (selectedIds.includes(person.id)) {
+                              setSelectedIds(prev => prev.filter(i => i !== person.id));
+                            } else if (selectedIds.length < MAX_SELECTION) {
+                              setSelectedIds(prev => [...prev, person.id]);
+                            }
+                          }} 
+                          disabled={selectedIds.length >= MAX_SELECTION && !selectedIds.includes(person.id)}
+                          className="w-4 h-4 rounded border-gray-600 text-purple-600 focus:ring-purple-500" 
+                        />
                         <span className="font-semibold flex-1">{person.name}</span>
                         <span className="text-xs text-gray-400">{person.country}</span>
                       </label>
                     ))}
+                    {selectedIds.length >= MAX_SELECTION && (
+                      <div className="mt-2 p-3 border-t border-white/10">
+                        <div className="flex items-center gap-2 text-xs text-red-500 font-semibold">
+                          <Crown className="w-4 h-4" />
+                          Maximum 3 people can be selected. Upgrade to Pro to add more.
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
 
-              {/* Date, View & Timezone Controls in one row - Aligned to Calendar */}
-              <div className="flex flex-col md:flex-row items-center gap-4 w-full">
-                {/* Date Selector - Less wide */}
-                <div className="flex items-center bg-black border border-white/20 rounded-xl px-4 py-2 w-full md:w-auto">
+              {/* Date, View & Timezone Controls in one row */}
+              <div className="flex flex-col md:flex-row items-stretch gap-4 w-full">
+                <div className="flex items-center bg-black border border-white/20 rounded-xl px-4 py-2 flex-[2]">
                   <button onClick={() => navigateDate(-1)} className="p-2 hover:bg-white/10 rounded-full transition"><ChevronLeft className="w-5 h-5" /></button>
                   <span className="font-bold text-lg mx-4 whitespace-nowrap flex-1 text-center">{currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                   <button onClick={() => navigateDate(1)} className="p-2 hover:bg-white/10 rounded-full transition"><ChevronRight className="w-5 h-5" /></button>
                 </div>
 
-                {/* View Toggle - Stretched */}
-                <div className="flex bg-black border border-white/20 rounded-xl p-1 flex-grow">
+                <div className="flex bg-black border border-white/20 rounded-xl p-1 flex-[1.5]">
                   {(['day', 'week', 'month'] as const).map((v) => (
-                    <button key={v} onClick={() => setView(v)} className={`flex-1 px-6 py-2 rounded-lg font-bold text-sm transition-all ${view === v ? 'bg-white text-black' : 'text-gray-400 hover:text-white'}`}>
+                    <button key={v} onClick={() => setView(v)} className={`flex-1 px-2 py-2 rounded-lg font-bold text-xs transition-all ${view === v ? 'bg-white text-black' : 'text-gray-400 hover:text-white'}`}>
                       {v.charAt(0).toUpperCase() + v.slice(1)}
                     </button>
                   ))}
                 </div>
 
-                {/* Timezone Selector */}
-                <div className="inline-flex items-center gap-1.5 text-xs text-gray-400 bg-black border border-white/20 rounded-xl px-3 py-2 whitespace-nowrap w-full md:w-auto">
+                <div className="inline-flex items-center gap-1.5 text-xs text-gray-400 bg-black border border-white/20 rounded-xl px-3 py-2 whitespace-nowrap flex-1">
                   <Globe className="w-4 h-4" />
                   <select
                     value={selectedTz}
                     onChange={(e) => setSelectedTz(e.target.value)}
-                    className="bg-transparent text-xs text-gray-300 font-medium focus:outline-none cursor-pointer hover:text-purple-400 transition-colors w-full"
+                    className="bg-transparent text-xs text-gray-300 font-medium focus:outline-none cursor-pointer hover:text-purple-400 transition-colors w-full h-full"
                   >
                     <option value="EST" className="bg-black">EST (New York)</option>
                     <option value="IST" className="bg-black">IST (Mumbai)</option>
@@ -190,7 +211,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Mode Toggle */}
+              {/* Mode Toggle - smaller and closer */}
               <div className="flex justify-end items-center gap-3 mt-2">
                 <div className="inline-flex bg-white/10 p-1 rounded-lg border border-white/20">
                   <button onClick={() => setDisplayMode('full')} className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${displayMode === 'full' ? 'bg-white/20 text-white' : 'text-gray-400'}`}>Full Day</button>
@@ -237,7 +258,7 @@ export default function DashboardPage() {
                           const slot = freeSlots[i];
                           const isMatch = slot && matches.includes(person.schedule[dayIdx].indexOf(slot));
                           return (
-                            <div key={i} className={`aspect-square rounded-lg border flex items-center justify-center p-1 text-center transition-all relative ${slot ? 'bg-emerald-600/20 border-emerald-600/40' : 'bg-white/5 border-white/5 opacity-20'}`}>
+                            <div key={i} className={`aspect-square rounded-lg border flex items-center justify-center p-1 text-center transition-all ${slot ? 'bg-emerald-600/20 border-emerald-600/40' : 'bg-white/5 border-white/5 opacity-20'}`}>
                               {isMatch && (
                                 <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[8px] font-black px-2 py-0.5 rounded shadow-lg z-10 flex items-center gap-1">
                                   <CheckCircle2 className="w-2 h-2" />
@@ -256,7 +277,7 @@ export default function DashboardPage() {
               <div className="py-20 text-center border-2 border-dashed border-white/10 rounded-3xl bg-white/5">
                 <Crown className="w-10 h-10 text-purple-500 mx-auto mb-4" />
                 <h3 className="text-xl font-bold mb-2">Upgrade to Pro</h3>
-                <p className="text-gray-400 text-sm mb-6">Unlock {view} views and unlimited comparisons.</p>\
+                <p className="text-gray-400 text-sm mb-6">Unlock {view} views and unlimited comparisons.</p>
                 <button className="bg-purple-600 text-white px-6 py-2 rounded-full font-bold hover:bg-purple-700 transition">Upgrade Now</button>
               </div>
             )}
