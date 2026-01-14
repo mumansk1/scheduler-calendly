@@ -76,7 +76,6 @@ export default function DashboardPage() {
     return `${time} ${period} - ${nextHour === 0 ? 12 : nextHour}:00 ${nextPeriod}`;
   };
 
-  // Helper to find matches (free slots common to all selected people)
   const getMatches = () => {
     if (selectedPeople.length < 2) return [];
     const firstPersonSlots = selectedPeople[0].schedule[dayIdx];
@@ -93,10 +92,8 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
-      {/* Background Glow */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b0764,transparent)] pointer-events-none" />
 
-      {/* Desktop Sidebar */}
       <aside className="hidden lg:block fixed left-0 top-0 h-full w-64 bg-transparent border-r border-white/10 z-50">
         <div className="p-6">
           <div className="flex items-center gap-2 mb-8">
@@ -115,20 +112,15 @@ export default function DashboardPage() {
         </div>
       </aside>
 
-      {/* Main content */}
       <main className="lg:ml-64 relative min-h-screen p-4 md:p-8">
         <div className="max-w-5xl mx-auto">
-
-          {/* Header / Selectors Area */}
           <div className="space-y-6 mb-8">
             <div className="flex flex-col items-center text-center">
               <h2 className="text-3xl font-extrabold tracking-tight mb-2">Find Shared Availability</h2>
               <p className="text-gray-400 text-sm">Compare schedules and find the perfect slot.</p>
             </div>
 
-            {/* Stretched Selectors */}
             <div className="grid grid-cols-1 gap-4">
-              {/* People Dropdown */}
               <div className="relative w-full" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -150,21 +142,27 @@ export default function DashboardPage() {
                   <div className="absolute z-50 mt-2 w-full bg-black border border-white/20 rounded-xl shadow-2xl p-2">
                     {PEOPLE.map(person => (
                       <label key={person.id} className={`flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition-colors ${selectedIds.length >= MAX_SELECTION && !selectedIds.includes(person.id) ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                        <input 
-                          type="checkbox" 
-                          checked={selectedIds.includes(person.id)} 
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(person.id)}
                           onChange={() => {
                             if (selectedIds.includes(person.id)) {
                               setSelectedIds(prev => prev.filter(i => i !== person.id));
                             } else if (selectedIds.length < MAX_SELECTION) {
                               setSelectedIds(prev => [...prev, person.id]);
                             }
-                          }} 
+                          }}
                           disabled={selectedIds.length >= MAX_SELECTION && !selectedIds.includes(person.id)}
-                          className="w-4 h-4 rounded border-gray-600 text-purple-600 focus:ring-purple-500" 
+                          className="w-4 h-4 rounded border-gray-600 text-purple-600 focus:ring-purple-500"
                         />
-                        <span className="font-semibold flex-1">{person.name}</span>
-                        <span className="text-xs text-gray-400">{person.country}</span>
+                        <div className="flex-1">
+                          <div className="font-semibold flex items-center gap-2">
+                            <span>{person.name}</span>
+                            <span className="text-xs text-gray-400">
+                              {person.country.split(' ')[0]} ({person.country.split('(')[1]?.split(')')[0]})
+                            </span>
+                          </div>
+                        </div>
                       </label>
                     ))}
                     {selectedIds.length >= MAX_SELECTION && (
@@ -179,7 +177,6 @@ export default function DashboardPage() {
                 )}
               </div>
 
-              {/* Date, View & Timezone Controls in one row */}
               <div className="flex flex-col md:flex-row items-stretch gap-4 w-full">
                 <div className="flex items-center bg-black border border-white/20 rounded-xl px-4 py-2 flex-[2]">
                   <button onClick={() => navigateDate(-1)} className="p-2 hover:bg-white/10 rounded-full transition"><ChevronLeft className="w-5 h-5" /></button>
@@ -211,7 +208,6 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Mode Toggle - smaller and closer */}
               <div className="flex justify-end items-center gap-3 mt-2">
                 <div className="inline-flex bg-white/10 p-1 rounded-lg border border-white/20">
                   <button onClick={() => setDisplayMode('full')} className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${displayMode === 'full' ? 'bg-white/20 text-white' : 'text-gray-400'}`}>Full Day</button>
@@ -221,15 +217,18 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Comparison Grid */}
           <section className="relative z-10">
             {view === 'day' ? (
               <div className={`grid grid-cols-1 gap-6 ${selectedIds.length > 1 ? 'md:grid-cols-2 lg:grid-cols-' + selectedIds.length : ''}`}>
                 {selectedPeople.map(person => (
                   <div key={person.id} className="space-y-4">
                     <div className="pb-2 border-b border-white/10">
-                      <h3 className="font-bold text-lg">{person.name}</h3>
-                      <p className="text-xs text-gray-400 font-medium">{person.country} • {selectedTz}</p>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-lg">{person.name}</h3>
+                        <span className="text-xs text-gray-400 font-medium">
+                          {person.country.split(' ')[0]} ({person.country.split('(')[1]?.split(')')[0]})
+                        </span>
+                      </div>
                     </div>
 
                     {displayMode === 'full' ? (
