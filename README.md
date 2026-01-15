@@ -28,6 +28,8 @@ Information from outside the sources: To create a secure, high-entropy secret, y
 2. Using JavaScript/Node.js: If you don't have OpenSSL, you can run this in your terminal:
     ◦ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
+# Credential: random string generation
+openssl rand -base64 32
 
 # Database
 npx prisma studio
@@ -37,3 +39,7 @@ npx prisma studio
 2. GoDaddy - https://www.godaddy.com/domainsearch
 3. Bluehost - https://www.bluehost.com/domain-search
 4. Google Domains - https://domains.google/
+5. Cloud Flare - www.domains.cloudflare.com
+
+# Patent, trademark search
+https://www-search.uspto.gov/WWW-search.html
