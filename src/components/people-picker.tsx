@@ -2,13 +2,13 @@
 
 import React from 'react';
 
-type Person = {
+export type Person = {
   id: string;
   firstName: string;
   lastName?: string;
-  countryCode?: string; // ISO 3166-1 alpha-2, e.g. 'US', 'IN', 'GB'
+  countryCode?: string;
   countryName?: string;
-  timezoneAbbr?: string; // e.g. 'EST', 'IST', 'GMT'
+  timezoneAbbr?: string;
 };
 
 type PeoplePickerProps = {
