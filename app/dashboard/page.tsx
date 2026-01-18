@@ -151,23 +151,16 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* FULL DAY / FREE ONLY TOGGLE */}
-        <div className="flex justify-center">
-          <div className="inline-flex bg-white/10 p-1 rounded-lg border border-white/20">
-            <button
-              onClick={() => setDisplayMode('full')}
-              className={`px-6 py-2 rounded-md text-xs font-bold transition-all ${displayMode === 'full' ? 'bg-white/20 text-white' : 'text-gray-400'}`}
-            >
-              Full Day
-            </button>
-            <button
-              onClick={() => setDisplayMode('free')}
-              className={`px-6 py-2 rounded-md text-xs font-bold transition-all ${displayMode === 'free' ? 'bg-white/20 text-white' : 'text-gray-400'}`}
-            >
-              Free Only
-            </button>
+        {/* UPGRADE CARD - directly under the date/view controls */}
+        {!isPro && (view === 'week' || view === 'month') && (
+          <div className="w-full max-w-5xl mx-auto">
+            <UpgradeToProCard
+              text="Upgrade to Pro for unlimited comparisons and calendar views."
+              actionLabel="Upgrade Now"
+              onAction={() => console.log('Upgrade clicked')}
+            />
           </div>
-        </div>
+        )}
 
         {/* PEOPLE PICKER - FIXED POSITION */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
@@ -189,15 +182,6 @@ export default function DashboardPage() {
             onConfirm={handleConfirm}
           />
         </div>
-
-        {/* PRO UPGRADE CARD */}
-        {!isPro && (view === 'week' || view === 'month') && (
-          <UpgradeToProCard
-            text="Upgrade to Pro for unlimited comparisons and calendar views."
-            actionLabel="Upgrade Now"
-            onAction={() => console.log('Upgrade clicked')}
-          />
-        )}
       </main>
     </div>
   );

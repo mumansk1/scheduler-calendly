@@ -1,10 +1,10 @@
 // app/api/auth/[...nextauth]/route.ts
-import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
+import NextAuth, { AuthOptions } from 'next-auth';
 import type { Session } from 'next-auth';
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET, // Add this line
   providers: [
     // 1. Credentials Provider (Email + Password)
