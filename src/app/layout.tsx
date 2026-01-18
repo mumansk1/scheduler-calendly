@@ -9,8 +9,8 @@ const inter = Inter({ subsets: ['latin'] });
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Appointment Manager - Therapy Scheduling Made Easy',
-  description: 'Manage your therapy appointments with ease using our integrated Calendly solution',
+  title: 'whenRUfree - Find Time That Works for Everyone',
+  description: 'A secure, fast and simle way to share availability',
   metadataBase: new URL(process.env.NEXTAUTH_URL || 'http://localhost:3000'),
   icons: {
     icon: '/favicon.svg',

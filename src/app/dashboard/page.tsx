@@ -181,9 +181,9 @@ export default function DashboardPage() {
         )}
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col items-center">
-          <h3 className="text-sm font-bold text-gray-400 mb-4 text-center">
+          <h1 className="text-lg md:text-2xl font-bold text-gray-100 tracking-tight mb-4 text-center">
             Select whom to include to see times that work for everyone
-          </h3>
+          </h1>
           {/* People picker */}
           <PeoplePicker
             people={formattedPeople}
