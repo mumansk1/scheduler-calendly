@@ -5,7 +5,7 @@ import NextAuth, { AuthOptions } from 'next-auth';
 import type { Session } from 'next-auth';
 
 export const authOptions: AuthOptions = {
-  secret: process.env.NEXTAUTH_SECRET, // Add this line
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     // 1. Credentials Provider (Email + Password)
     CredentialsProvider({
@@ -39,7 +39,7 @@ export const authOptions: AuthOptions = {
   },
   pages: {
     signIn: '/auth/signin',
-    signUp: '/auth/signup',
+    // Removed signUp here because NextAuth does not support it
   },
   callbacks: {
     async session({ session, token } : { session: Session, token: any }) {
