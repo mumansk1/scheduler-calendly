@@ -34,14 +34,6 @@ export default function MatchesPanel({ people, selectedIds, dayIndex, onConfirm 
 
   const [selectedSlotIdx, setSelectedSlotIdx] = useState<number | null>(null);
 
-  if (selectedPeople.length < 2) {
-    return (
-      <div className="rounded-md bg-white/5 border border-white/6 p-4 text-gray-300 mt-6 text-center italic">
-        Select at least 2 people to see matching availability.
-      </div>
-    );
-  }
-
   // Find slots where ALL selected people are free
   const matchingSlots = allSlots
     .map((slot, idx) => {
