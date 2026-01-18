@@ -101,19 +101,23 @@ export function findMatchingHours(
 
 /**
  * Build MatchResult objects with 24-hour labels.
+ * Backwards-compatible: accepts an optional opts parameter (e.g. { use12Hour: true })
+ * but always formats in 24-hour HH:MM - HH:MM.
  */
 export function buildMatches(
   people: PersonMinimal[],
   selectedIds: string[],
-  dayIndex: number
+  dayIndex: number,
+  opts?: { use12Hour?: boolean } // kept for compatibility with older callers
 ): MatchResult[] {
   const hours = findMatchingHours(people, selectedIds, dayIndex);
 
   return hours.map((hour) => {
-    return { 
-      idx: hour, 
-      time: String(hour), 
-      label: formatOneHourRange(hour) 
+    return {
+      idx: hour,
+      time: String(hour),
+      label: formatOneHourRange(hour),
     };
   });
+
 }
