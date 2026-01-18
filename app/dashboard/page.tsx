@@ -55,42 +55,48 @@ export default function DashboardPage() {
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b0764,transparent)] pointer-events-none" />
 
       {/* HEADER WITH SHARE LINK */}
-      <header className="backdrop-blur-sm border-b border-purple-700 sticky top-0 z-50 bg-[#3b0764]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-bold text-xl">whenRUfree</span>
-          </div>
-
-          <div className="hidden md:flex flex-col items-center gap-1">
-            <span className="font-semibold text-purple-100 text-sm">Copy this link to share when you are free</span>
-            <div className="flex items-center gap-2">
-              <div className="bg-black border border-white/10 rounded px-3 py-1.5 font-mono text-xs text-purple-200 w-[300px] truncate">
-                {shareLink}
-              </div>
-              <button
-                onClick={() => navigator.clipboard.writeText(shareLink)}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded text-xs font-bold transition-colors"
-              >
-                Copy
-              </button>
-            </div>
-          </div>
-
-          <button
-            onClick={() => signOut({ callbackUrl: '/' })}
-            className="flex items-center gap-2 text-purple-200 hover:text-white transition text-sm font-medium bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg border border-white/10"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden md:inline">Sign out</span>
-          </button>
+<header className="backdrop-blur-sm border-b border-purple-700 bg-[#3b0764]">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    {/* Top Row: Logo and Sign Out */}
+    <div className="flex items-center justify-between mb-4 md:mb-0">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+          <Calendar className="w-5 h-5 text-white" />
         </div>
-      </header>
+        <span className="font-bold text-xl">whenRUfree</span>
+      </div>
+
+      <button
+        onClick={() => signOut({ callbackUrl: '/' })}
+        className="flex items-center gap-2 text-purple-200 hover:text-white transition text-sm font-medium bg-white/5 hover:bg-white/10 px-3 py-2 rounded-lg border border-white/10"
+      >
+        <LogOut className="w-4 h-4" />
+        <span className="hidden sm:inline">Sign out</span>
+      </button>
+    </div>
+
+    {/* Share Link Section: Always visible, centered on mobile, right-aligned on desktop */}
+    <div className="flex flex-col items-center md:absolute md:left-1/2 md:-translate-x-1/2 md:top-1/2 md:-translate-y-1/2 w-full md:w-auto">
+      <span className="font-semibold text-purple-100 text-xs md:text-sm mb-1 text-center">
+        Copy this link to share when you are free
+      </span>
+      <div className="flex items-center gap-2 w-full max-w-[400px] md:w-auto">
+        <div className="bg-black border border-white/10 rounded px-3 py-2 font-mono text-[10px] md:text-xs text-purple-200 flex-1 truncate">
+          {shareLink}
+        </div>
+        <button
+          onClick={() => navigator.clipboard.writeText(shareLink)}
+          className="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white px-4 py-2 rounded text-xs font-bold transition-all shadow-lg shadow-purple-900/20"
+        >
+          Copy
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
 
       {/* NAVIGATION BAR */}
-      <nav className="bg-[#2d053f]/90 backdrop-blur-sm border-b border-purple-800 sticky top-[88px] z-40">
+      <nav className="bg-[#2d053f]/90 backdrop-blur-sm border-b border-purple-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ul className="flex items-center gap-8 text-sm font-medium text-gray-300 py-3">
             <li><a href="#" className="text-white border-b-2 border-purple-400 pb-1">Dashboard</a></li>

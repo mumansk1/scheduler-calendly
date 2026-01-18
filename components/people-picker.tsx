@@ -38,7 +38,8 @@ export default function PeoplePicker({
 
   return (
     <div>
-      <div className="flex gap-4">
+      {/* Use wrapping so pills don't get squashed on small screens */}
+      <div className="flex flex-wrap gap-3 md:gap-4">
         {visiblePeople.map((person) => {
           const isSelected = selectedIds.includes(person.id);
           const isDisabled = !isSelected && isMaxReached;
@@ -46,7 +47,8 @@ export default function PeoplePicker({
           return (
             <label
               key={person.id}
-              className={`flex items-center gap-3 cursor-pointer rounded-lg px-4 py-3 border transition-colors duration-150 ease-out select-none flex-1 min-w-0
+              className={`cursor-pointer rounded-lg px-4 py-3 border transition-colors duration-150 ease-out select-none
+                w-full sm:flex-1 min-w-[140px] flex items-center gap-3
                 ${isSelected
                   ? 'bg-purple-800 border-purple-800 text-white focus-within:ring-2 focus-within:ring-purple-600'
                   : 'bg-black border-white/10 text-gray-300'}
@@ -67,13 +69,13 @@ export default function PeoplePicker({
                 checked={isSelected}
                 disabled={isDisabled}
                 onChange={() => toggleSelection(person.id)}
-                className="w-4 h-4 rounded border-gray-600 text-purple-400 focus:ring-purple-500"
+                className="w-4 h-4 rounded border-gray-600 text-purple-400 focus:ring-purple-500 flex-shrink-0"
                 aria-checked={isSelected}
                 aria-label={`Select ${person.name}`}
               />
-              <div className="flex flex-col leading-tight min-w-0">
-                <span className="font-semibold truncate">{person.name}</span>
-                <span className="text-xs text-gray-400 truncate">{person.country}</span>
+              <div className="flex flex-col leading-tight min-w-0 overflow-hidden">
+                <span className="font-semibold truncate text-sm md:text-base">{person.name}</span>
+                <span className="text-xs md:text-[12px] text-gray-400 truncate">{person.country}</span>
               </div>
             </label>
           );
