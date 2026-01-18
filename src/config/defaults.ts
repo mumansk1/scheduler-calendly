@@ -6,6 +6,7 @@ export const SHARE_LINK_BASE = 'https://whenrufree.com/schedule';
 export const NAVIGATION_LINKS = [
   { label: 'Dashboard', href: '/dashboard' },
   { label: 'Availability', href: '/availability' },
+  { label: 'Contacts', href: '/contacts'},
   { label: 'Settings', href: '/settings' },
 ];
 

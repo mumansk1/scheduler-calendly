@@ -27,11 +27,6 @@ const countryCodeToFlagEmoji = (code?: string) => {
     .join('');
 };
 
-/**
- * Presentational PeoplePicker component — controlled via props.
- * Use this in the Dashboard like:
- * <PeoplePicker people={formattedPeople} selectedIds={selectedIds} onToggle={handleToggle} showFlags />
- */
 export default function PeoplePicker({
   people,
   selectedIds,
@@ -42,8 +37,12 @@ export default function PeoplePicker({
     <div
       role="list"
       aria-label="Select participants"
-      className="flex select-none rounded-lg border border-slate-700 bg-black/80 text-white"
-      style={{ height: 56, minWidth: 320 }}
+      /* 
+         Removed the heavy outer border and background.
+         Using flex-wrap so it naturally stacks on mobile.
+         Added gap-4 for professional breathing room between pills.
+      */
+      className="flex flex-wrap items-center justify-center gap-3 md:gap-4 w-full py-2"
     >
       {people.map((person, i) => {
         const isSelected = selectedIds.includes(person.id);
@@ -58,38 +57,38 @@ export default function PeoplePicker({
             type="button"
             aria-pressed={isSelected}
             onClick={() => onToggle(person.id)}
-            className={`flex items-center justify-center flex-1 px-4 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+            /* 
+               Professional Pill Design:
+               - Individual rounded-full shapes.
+               - Subtle border when not selected.
+               - High-quality gradient and glow when selected.
+            */
+            className={`flex items-center gap-3 px-5 py-2.5 rounded-full transition-all duration-200 border-2 shadow-sm active:scale-95 ${
               isSelected
-                ? 'bg-gradient-to-r from-purple-700 to-emerald-600 border border-purple-600 shadow-[0_0_10px_rgba(168,85,247,0.7)]'
-                : 'hover:bg-white/10 border border-transparent'
+                ? 'bg-gradient-to-r from-purple-600 to-emerald-600 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                : 'bg-white/5 border-white/10 text-gray-300 hover:border-white/20 hover:bg-white/10'
             }`}
-            style={{
-              borderLeft: i === 0 ? undefined : '1px solid #334155',
-            }}
           >
-            <div className="flex items-center justify-center gap-3">
-              <span className="font-semibold text-sm truncate max-w-[140px] text-center">
-                {displayName}
-              </span>
+            <span className="font-bold text-sm whitespace-nowrap">
+              {displayName}
+            </span>
 
-              <div className="flex items-center gap-2 whitespace-nowrap">
-                {showFlags && person.countryCode && (
-                  <span
-                    aria-label={person.countryName}
-                    role="img"
-                    className="text-lg select-none"
-                  >
-                    {countryCodeToFlagEmoji(person.countryCode)}
-                  </span>
-                )}
+            <div className="flex items-center gap-2 whitespace-nowrap border-l border-white/10 pl-2">
+              {showFlags && person.countryCode && (
+                <span
+                  aria-label={person.countryName}
+                  role="img"
+                  className="text-base select-none"
+                >
+                  {countryCodeToFlagEmoji(person.countryCode)}
+                </span>
+              )}
 
-                {(person.countryName || person.timezoneAbbr) && (
-                  <span className={`text-xs ${isSelected ? 'text-emerald-300' : 'text-slate-400'}`}>
-                    {showFlags && person.countryName ? `${person.countryName} ` : ''}
-                    {person.timezoneAbbr ? `(${person.timezoneAbbr})` : ''}
-                  </span>
-                )}
-              </div>
+              {person.timezoneAbbr && (
+                <span className={`text-[10px] font-medium uppercase tracking-wider ${isSelected ? 'text-emerald-200' : 'text-gray-400'}`}>
+                  {person.timezoneAbbr}
+                </span>
+              )}
             </div>
           </button>
         );

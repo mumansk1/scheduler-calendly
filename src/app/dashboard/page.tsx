@@ -11,6 +11,7 @@ import { PEOPLE } from '@/data/mock-data';
 import PeoplePicker from '@/components/people-picker';
 import MatchesPanel from '@/components/matches-panel';
 import UpgradeToProCard from '@/components/upgrade-to-pro-card';
+import ShareLinkWidget from '@/components/share-link-widget';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -82,7 +83,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b0764,transparent)] pointer-events-none" />
 
-      <header className="backdrop-blur-sm border-b border-purple-700 bg-[#3b0764]">
+      <header className="backdrop-blur-sm border-b border-purple-700 bg-[#3b0764] flexbox justify-center items-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between mb-4 md:mb-0">
             <div className="flex items-center gap-3">
@@ -100,22 +101,7 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          <div className="flex flex-col items-center md:absolute md:left-1/2 md:-translate-x-1/2 md:top-1/2 md:-translate-y-1/2 w-full md:w-auto">
-            <span className="font-semibold text-purple-100 text-xs md:text-sm mb-1 text-center">
-              Copy this link to share when you are free
-            </span>
-            <div className="flex items-center gap-2 w-full max-w-[400px] md:w-auto">
-              <div className="bg-black border border-white/10 rounded px-3 py-2 font-mono text-[10px] md:text-xs text-purple-200 flex-1 truncate">
-                {shareLink}
-              </div>
-              <button
-                onClick={() => navigator.clipboard.writeText(shareLink)}
-                className="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white px-4 py-2 rounded text-xs font-bold transition-all shadow-lg shadow-purple-900/20"
-              >
-                Copy
-              </button>
-            </div>
-          </div>
+          <ShareLinkWidget shareLink={shareLink} className="md:absolute md:left-1/2 md:-translate-x-1/2 md:top-1/2 md:-translate-y-1/2" />
         </div>
       </header>
 
@@ -124,6 +110,7 @@ export default function DashboardPage() {
           <ul className="flex items-center gap-8 text-sm font-medium text-gray-300 py-3">
             <li><a href="#" className="text-white border-b-2 border-purple-400 pb-1">Dashboard</a></li>
             <li><a href="#" className="hover:text-white transition">Availability</a></li>
+            <li><a href="#" className="hover:text-white transition">Contacts</a></li>
             <li><a href="#" className="hover:text-white transition">Settings</a></li>
           </ul>
         </div>
