@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { Crown } from 'lucide-react';
 import {
   Globe,
   ChevronLeft,
@@ -158,15 +159,16 @@ export default function DashboardPage() {
         </div>
 
         {/* UPGRADE CARD - directly under the date/view controls */}
-        {!isPro && (view === 'week' || view === 'month') && (
-          <div className="w-full max-w-5xl mx-auto">
-            <UpgradeToProCard
-              text="Upgrade to Pro for unlimited comparisons and calendar views."
-              actionLabel="Upgrade Now"
-              onAction={() => console.log('Upgrade clicked')}
-            />
-          </div>
-        )}
+      {!isPro && (view === 'week' || view === 'month') && (
+  <div className="w-full max-w-5xl mx-auto">
+    <UpgradeToProCard
+      text="Upgrade to Pro for unlimited comparisons and calendar views."
+      actionLabel="Upgrade Now"
+      onAction={() => console.log('Upgrade clicked')}
+      icon={<Crown className="w-5 h-5 text-yellow-400" />} // Add this line
+    />
+  </div>
+)}
 
         {/* PEOPLE PICKER - FIXED POSITION */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
