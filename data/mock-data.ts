@@ -13,7 +13,7 @@ export const PEOPLE: Person[] = [
     schedule: Array(7).fill(null).map(() =>
       Array.from({ length: 24 }, (_, h) => ({
         time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
-        free: ![9, 10, 14, 15].includes(h),
+        free: [9, 10, 14, 15].includes(h),
       }))
     ),
   },
@@ -24,7 +24,7 @@ export const PEOPLE: Person[] = [
     schedule: Array(7).fill(null).map(() =>
       Array.from({ length: 24 }, (_, h) => ({
         time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
-        free: ![10, 11, 15, 16].includes(h),
+        free: [10, 11, 15, 16].includes(h),
       }))
     ),
   },
@@ -35,7 +35,7 @@ export const PEOPLE: Person[] = [
     schedule: Array(7).fill(null).map(() =>
       Array.from({ length: 24 }, (_, h) => ({
         time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
-        free: ![9, 13, 14].includes(h),
+        free: [9, 13, 14].includes(h),
       }))
     ),
   },
@@ -46,7 +46,7 @@ export const PEOPLE: Person[] = [
     schedule: Array(7).fill(null).map(() =>
       Array.from({ length: 24 }, (_, h) => ({
         time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
-        free: ![8, 9, 15].includes(h),
+        free: [8, 9, 15].includes(h),
       }))
     ),
   },
@@ -57,7 +57,7 @@ export const PEOPLE: Person[] = [
     schedule: Array(7).fill(null).map(() =>
       Array.from({ length: 24 }, (_, h) => ({
         time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
-        free: ![10, 11, 15, 16].includes(h),
+        free: [10, 11, 15, 16].includes(h),
       }))
     ),
   },

@@ -110,7 +110,7 @@ export default function DashboardPage() {
       <main className="relative px-4 sm:px-6 lg:px-8 py-8 max-w-5xl mx-auto space-y-8">
         {/* TITLE SECTION */}
         <div className="text-center space-y-2">
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Find Time That Work for Everyone</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Find Time That Works for Everyone</h2>
         </div>
 
         {/* DATE & VIEW CONTROLS */}
