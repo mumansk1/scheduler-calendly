@@ -1,0 +1,105 @@
+export type Slot = { time: string; free: boolean };
+
+/**
+ * New Person shape expected by the UI components
+ * - id: unique identifier
+ * - firstName, lastName: split name fields
+ * - countryCode: ISO 3166-1 alpha-2 (optional)
+ * - countryName: human readable country/region label
+ * - timezoneAbbr: e.g. 'EST', 'IST'
+ * - schedule: same as before (7 days x 24 hours)
+ */
+export type Person = {
+  id: string;
+  firstName: string;
+  lastName?: string;
+  countryCode?: string;
+  countryName?: string;
+  timezoneAbbr?: string;
+  schedule: Slot[][];
+};
+
+export const MAX_SELECTION = 3;
+
+export const PEOPLE: Person[] = [
+  {
+    id: 'alice',
+    firstName: 'Alice',
+    lastName: 'Martinez',
+    countryCode: 'US',
+    countryName: 'USA',
+    timezoneAbbr: 'EST',
+    schedule: Array(7)
+      .fill(null)
+      .map(() =>
+        Array.from({ length: 24 }, (_, h) => ({
+          time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
+          free: [9, 10, 14, 15].includes(h),
+        }))
+      ),
+  },
+  {
+    id: 'bob',
+    firstName: 'Bob',
+    lastName: 'Johnson',
+    countryCode: 'IN',
+    countryName: 'India',
+    timezoneAbbr: 'IST',
+    schedule: Array(7)
+      .fill(null)
+      .map(() =>
+        Array.from({ length: 24 }, (_, h) => ({
+          time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
+          free: [9, 10, 11, 15, 16].includes(h),
+        }))
+      ),
+  },
+  {
+    id: 'carol',
+    firstName: 'Carol',
+    lastName: 'Smith',
+    countryCode: 'GB',
+    countryName: 'UK',
+    timezoneAbbr: 'GMT',
+    schedule: Array(7)
+      .fill(null)
+      .map(() =>
+        Array.from({ length: 24 }, (_, h) => ({
+          time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
+          free: [9, 13, 14].includes(h),
+        }))
+      ),
+  },
+  {
+    id: 'david',
+    firstName: 'David',
+    lastName: 'Wilson',
+    countryCode: 'US',
+    countryName: 'USA (West)',
+    timezoneAbbr: 'PST',
+    schedule: Array(7)
+      .fill(null)
+      .map(() =>
+        Array.from({ length: 24 }, (_, h) => ({
+          time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
+          free: [8, 9, 15].includes(h),
+        }))
+      ),
+  },
+  {
+    id: 'emma',
+    firstName: 'Emma',
+    lastName: 'Thompson',
+    countryCode: 'AU',
+    countryName: 'Australia',
+    timezoneAbbr: 'AEST',
+    schedule: Array(7)
+      .fill(null)
+      .map(() =>
+        Array.from({ length: 24 }, (_, h) => ({
+          time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
+          free: [10, 11, 15, 16].includes(h),
+        }))
+      ),
+  },
+];

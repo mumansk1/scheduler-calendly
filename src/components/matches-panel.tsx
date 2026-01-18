@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import type { Person } from '@/data/mock-data';
+import type { Person } from '@/components/people-picker';
+import { MAX_SELECTION } from '@/config/defaults';
 
 type MatchResult = {
   idx: number;    // hour number (e.g., 9 or 14)
@@ -65,7 +66,7 @@ export default function MatchesPanel({
 
   const participants = people
     .filter((p) => selectedIds.includes(p.id))
-    .map((p) => p.name ?? p.id);
+    .map((p) => (p.firstName ? `${p.firstName}${p.lastName ? ' ' + p.lastName : ''}` : p.id));
 
   const selectedMatch = matches.find((m) => m.idx === selectedSlotIdx) ?? null;
 
@@ -138,11 +139,22 @@ export default function MatchesPanel({
       {!loading && matches.length > 0 && (
         <>
           <div className="text-center mb-6 px-4">
-            <h3 className="text-lg font-bold text-purple-300">
-              There {matches.length === 1 ? 'is' : 'are'} {matches.length} match
-              {matches.length === 1 ? '' : 'es'} when all of you are available
-            </h3>
-            
+            {selectedIds.length === 1 ? (
+              <h3 className="text-lg font-bold text-purple-300">
+                Individual Availability
+              </h3>
+            ) : selectedIds.length < MAX_SELECTION ? (
+              <h3 className="text-lg font-bold text-purple-300">
+                There {matches.length === 1 ? 'is' : 'are'} {matches.length} match
+                {matches.length === 1 ? '' : 'es'}
+              </h3>
+            ) : (
+              <h3 className="text-lg font-bold text-purple-300">
+                There {matches.length === 1 ? 'is' : 'are'} {matches.length} match
+                {matches.length === 1 ? '' : 'es'} when all of you are available
+              </h3>
+            )}
+
             <div className="mt-4 flex flex-col items-center gap-2">
               <button
                 onClick={handleOpenConfirm}
@@ -154,10 +166,10 @@ export default function MatchesPanel({
               >
                 Confirm
               </button>
-              
+
               <p className={`text-sm font-medium transition-colors duration-300 ${selectedSlotIdx === null ? 'text-purple-400/70' : 'text-emerald-400'}`}>
-                {selectedSlotIdx === null 
-                  ? '↓ Select a time below to confirm' 
+                {selectedSlotIdx === null
+                  ? '↓ Select a time below to confirm'
                   : `Selected: ${selectedMatch?.label}`}
               </p>
             </div>
