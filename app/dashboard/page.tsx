@@ -7,25 +7,22 @@ import {
   Globe,
   ChevronLeft,
   ChevronRight,
-  Crown,
   Calendar,
   LogOut,
   Lock,
 } from 'lucide-react';
 
-import { Lato, Inter, Roboto } from 'next/font/google';
+import { Lato, Roboto } from 'next/font/google';
+
+import { PEOPLE, MAX_SELECTION } from '@/data/mock-data';
+
+import PeoplePicker from '@/components/people-picker';
+import UpgradeToProCard from '@/components/upgrade-to-pro-card';
 
 const lato = Lato({
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-lato',
-  display: 'swap',
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--font-inter',
   display: 'swap',
 });
 
@@ -36,84 +33,23 @@ const roboto = Roboto({
   display: 'swap',
 });
 
-import PeoplePicker from '@/components/people-picker';
-import UpgradeToProCard from '@/components/upgrade-to-pro-card';
-
-// --- Types & Mock Data ---
-type Slot = { time: string; free: boolean };
-type Person = { id: string; name: string; country: string; schedule: Slot[][] };
-
-const MAX_SELECTION = 3;
-
-const PEOPLE: Person[] = [
-  {
-    id: 'alice',
-    name: 'Alice Martinez (You)',
-    country: '🇺🇸 USA (EST)',
-    schedule: Array(7).fill(null).map(() =>
-      Array.from({ length: 24 }, (_, h) => ({
-        time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
-        free: ![9, 10, 14, 15].includes(h),
-      }))
-    ),
-  },
-  {
-    id: 'bob',
-    name: 'Bob Johnson',
-    country: '🇮🇳 India (IST)',
-    schedule: Array(7).fill(null).map(() =>
-      Array.from({ length: 24 }, (_, h) => ({
-        time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
-        free: ![10, 11, 15, 16].includes(h),
-      }))
-    ),
-  },
-  {
-    id: 'carol',
-    name: 'Carol Smith',
-    country: '🇬🇧 UK (GMT)',
-    schedule: Array(7).fill(null).map(() =>
-      Array.from({ length: 24 }, (_, h) => ({
-        time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
-        free: ![9, 13, 14].includes(h),
-      }))
-    ),
-  },
-  {
-    id: 'david',
-    name: 'David Wilson',
-    country: '🇺🇸 USA (West) (PST)',
-    schedule: Array(7).fill(null).map(() =>
-      Array.from({ length: 24 }, (_, h) => ({
-        time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
-        free: ![8, 9, 15].includes(h),
-      }))
-    ),
-  },
-  {
-    id: 'emma',
-    name: 'Emma Thompson',
-    country: '🇦🇺 Australia (AEST)',
-    schedule: Array(7).fill(null).map(() =>
-      Array.from({ length: 24 }, (_, h) => ({
-        time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
-        free: ![10, 11, 15, 16].includes(h),
-      }))
-    ),
-  },
-];
-
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 0, 13));
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedTz, setSelectedTz] = useState('EST');
   const [selectedIds, setSelectedIds] = useState<string[]>(['alice']);
   const [view, setView] = useState<'day' | 'week' | 'month'>('day');
   const [displayMode, setDisplayMode] = useState<'full' | 'free'>('full');
 
   const isPro = false;
+
+  // Centralized upgrade handler
+  const handleUpgrade = () => {
+    console.log("Redirecting to billing or opening modal...");
+    // router.push('/billing'); 
+  };
 
   const handleViewChange = (v: 'day' | 'week' | 'month') => {
     setView(v);
@@ -249,26 +185,33 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-4 mb-8">
-            <PeoplePicker people={PEOPLE} selectedIds={selectedIds} setSelectedIds={setSelectedIds} maxSelection={MAX_SELECTION} />
+            <PeoplePicker 
+              people={PEOPLE} 
+              selectedIds={selectedIds} 
+              setSelectedIds={setSelectedIds} 
+              maxSelection={MAX_SELECTION} 
+              onUpgrade={handleUpgrade} // Passed handler here
+            />
 
-            {/* FIXED CONTROLS ROW */}
             <div className="flex flex-col md:flex-row items-center gap-4 w-full">
-              {/* Date Selector - 60% width, centered content */}
               <div className="flex items-center bg-black border border-white/20 rounded-xl px-4 py-2 md:w-[60%] h-[52px]">
                 <button onClick={() => navigateDate(-1)} className="p-2 hover:bg-white/10 rounded-full transition">
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <span className="font-bold mx-4 flex-1 text-center text-lg">
-                  {currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  {currentDate.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
                 </span>
                 <button onClick={() => navigateDate(1)} className="p-2 hover:bg-white/10 rounded-full transition">
                   <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Other Controls - 40% width, flex-row to prevent collapsing */}
               <div className="flex items-center gap-3 md:w-[40%] h-[52px]">
-                {/* View Selector */}
                 <div className="flex bg-black border border-white/20 rounded-xl p-1 flex-[1.5] h-full items-center">
                   {(['day', 'week', 'month'] as const).map(v => (
                     <button
@@ -284,7 +227,6 @@ export default function DashboardPage() {
                   ))}
                 </div>
 
-                {/* Timezone Selector */}
                 <div className="inline-flex items-center gap-1.5 text-xs text-gray-400 bg-black border border-white/20 rounded-xl px-3 py-2 flex-1 h-full">
                   <Globe className="w-4 h-4 flex-shrink-0" />
                   <select
@@ -302,7 +244,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Centered Toggle Row */}
             <div className="flex justify-center mt-6">
               <div className="inline-flex bg-white/10 p-1 rounded-lg border border-white/20">
                 <button
@@ -323,9 +264,9 @@ export default function DashboardPage() {
             {(view === 'week' || view === 'month') && !isPro && (
               <div className="flex justify-center mt-4">
                 <UpgradeToProCard
-                  text={`The ${view} view is a Pro feature. Upgrade to Pro to unlock it.`}
-                  actionLabel="Upgrade"
-                  onAction={() => {}}
+                  text={`The ${view} view is a Pro feature. Upgrade to Pro for unlimited comparisons and views.`}
+                  actionLabel="Upgrade Now"
+                  onAction={handleUpgrade} // Passed handler here
                 />
               </div>
             )}
