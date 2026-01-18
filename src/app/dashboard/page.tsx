@@ -123,9 +123,6 @@ export default function DashboardPage() {
       </nav>
 
       <main className="relative px-4 sm:px-6 lg:px-8 py-8 max-w-5xl mx-auto space-y-8">
-        <div className="text-center space-y-2">
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Find Time That Works for Everyone</h2>
-        </div>
 
         <div className="flex flex-col md:flex-row items-center gap-4 w-full">
           <div className="flex items-center bg-black border border-white/20 rounded-xl px-4 py-2 md:w-[60%] h-[52px]">
@@ -184,8 +181,9 @@ export default function DashboardPage() {
         )}
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col items-center">
-          <h3 className="text-sm font-bold text-gray-400 tracking-widest mb-4 text-center">Select whom to include to see times that work for Everyone</h3>
-
+          <h3 className="text-sm font-bold text-gray-400 mb-4 text-center">
+            Select whom to include to see times that work for everyone
+          </h3>
           {/* People picker */}
           <PeoplePicker
             people={formattedPeople}
