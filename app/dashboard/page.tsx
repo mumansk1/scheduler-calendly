@@ -18,6 +18,7 @@ import { PEOPLE, MAX_SELECTION } from '@/data/mock-data';
 
 import PeoplePicker from '@/components/people-picker';
 import UpgradeToProCard from '@/components/upgrade-to-pro-card';
+import MatchesPanel from '@/components/matches-panel';
 
 const lato = Lato({
   subsets: ['latin'],
@@ -47,7 +48,7 @@ export default function DashboardPage() {
 
   // Centralized upgrade handler
   const handleUpgrade = () => {
-    console.log("Redirecting to billing or opening modal...");
+    console.log('Redirecting to billing or opening modal...');
     // router.push('/billing'); 
   };
 
@@ -190,7 +191,7 @@ export default function DashboardPage() {
               selectedIds={selectedIds} 
               setSelectedIds={setSelectedIds} 
               maxSelection={MAX_SELECTION} 
-              onUpgrade={handleUpgrade} // Passed handler here
+              onUpgrade={handleUpgrade}
             />
 
             <div className="flex flex-col md:flex-row items-center gap-4 w-full">
@@ -264,58 +265,17 @@ export default function DashboardPage() {
             {(view === 'week' || view === 'month') && !isPro && (
               <div className="flex justify-center mt-4">
                 <UpgradeToProCard
-                  text={`The ${view} view is a Pro feature. Upgrade to Pro for unlimited comparisons and views.`}
+                  text={`You have reached the maximum of ${MAX_SELECTION} people. Upgrade to Pro for unlimited comparisons and views.`}
                   actionLabel="Upgrade Now"
-                  onAction={handleUpgrade} // Passed handler here
+                  onAction={handleUpgrade}
                 />
               </div>
             )}
+
+            {/* Matches panel (component) */}
+            <MatchesPanel people={PEOPLE} selectedIds={selectedIds} dayIndex={dayIdx} />
           </div>
 
-          <section className="relative z-10">
-            {view === 'day' && (
-              <div
-                className={`grid grid-cols-1 gap-8 ${
-                  selectedIds.length > 1 ? `md:grid-cols-2 lg:grid-cols-${selectedIds.length}` : ''
-                }`}
-              >
-                {selectedPeople.map(person => (
-                  <div key={person.id} className="space-y-4">
-                    <div className="pb-2 border-b border-white/10">
-                      <h3 className="font-bold text-lg">{person.name}</h3>
-                    </div>
-                    <div className="space-y-2">
-                      {person.schedule[dayIdx].map((slot, i) => {
-                        const isMatch = matches.includes(i);
-                        return (
-                          <div
-                            key={i}
-                            className={`group relative border rounded-xl p-4 transition-all border-l-4 ${
-                              slot.free
-                                ? 'bg-emerald-600/10 border-emerald-600/30 border-l-emerald-600'
-                                : 'bg-white/5 border-white/5 border-l-gray-700 opacity-40'
-                            }`}
-                          >
-                            {isMatch && (
-                              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[10px] font-black px-3 py-1 rounded-md shadow-lg z-10 flex items-center gap-1">
-                                MATCH
-                              </div>
-                            )}
-                            <div className="flex justify-between items-center">
-                              <span className="font-bold text-sm">{formatTimeSlot(slot.time)}</span>
-                              <span className={`text-[10px] font-black uppercase ${slot.free ? 'text-emerald-400' : 'text-gray-500'}`}>
-                                {slot.free ? 'Free' : 'Busy'}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
         </div>
       </main>
     </div>

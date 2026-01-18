@@ -4,6 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 import { prisma } from './db';
+import type { Session } from 'next-auth';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -61,7 +62,7 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token } : { session: Session, token: any }) {
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;

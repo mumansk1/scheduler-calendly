@@ -2,6 +2,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
+import type { Session } from 'next-auth';
 
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET, // Add this line
@@ -41,7 +42,7 @@ export const authOptions = {
     signUp: '/auth/signup',
   },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token } : { session: Session, token: any }) {
       if (session.user) {
         // @ts-ignore
         session.user.id = token.sub;
