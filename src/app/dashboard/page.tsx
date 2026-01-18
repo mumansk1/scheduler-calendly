@@ -190,8 +190,8 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-          <h3 className="text-sm font-bold text-gray-400 tracking-widest mb-4">Select whom to include to see times that work for Everyone</h3>
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col items-center">
+          <h3 className="text-sm font-bold text-gray-400 tracking-widest mb-4 text-center">Select whom to include to see times that work for Everyone</h3>
 
           {/* People picker */}
           <PeoplePicker
