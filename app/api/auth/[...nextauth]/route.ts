@@ -39,7 +39,7 @@ export const authOptions: AuthOptions = {
   },
   pages: {
     signIn: '/auth/signin',
-    // Removed signUp here because NextAuth does not support it
+    // Removed signUp because NextAuth does not support it
   },
   callbacks: {
     async session({ session, token } : { session: Session, token: any }) {
