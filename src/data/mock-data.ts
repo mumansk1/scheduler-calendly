@@ -19,8 +19,6 @@ export type Person = {
   schedule: Slot[][];
 };
 
-export const MAX_SELECTION = 3;
-
 export const PEOPLE: Person[] = [
   {
     id: 'alice',
@@ -73,7 +71,7 @@ export const PEOPLE: Person[] = [
   {
     id: 'david',
     firstName: 'David',
-    lastName: 'Wilson',
+    lastName: 'Rubin',
     countryCode: 'US',
     countryName: 'USA (West)',
     timezoneAbbr: 'PST',
@@ -82,7 +80,7 @@ export const PEOPLE: Person[] = [
       .map(() =>
         Array.from({ length: 24 }, (_, h) => ({
           time: `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`,
-          free: [8, 9, 15].includes(h),
+          free: [8, 19, 15].includes(h),
         }))
       ),
   },

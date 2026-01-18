@@ -1,5 +1,5 @@
 export const APP_NAME = 'whenRUfree';
-export const MAX_SELECTION = 3;
+export const MAX_SELECTION = 4;
 export const DEFAULT_TIMEZONE = 'EST';
 export const SHARE_LINK_BASE = 'https://whenrufree.com/schedule';
 

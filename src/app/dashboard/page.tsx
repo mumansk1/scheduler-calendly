@@ -27,7 +27,7 @@ export default function DashboardPage() {
   const dayIdx = currentDate.getDay();
 
   // Transform and limit to first 3 people for the picker UI
-  const formattedPeople = PEOPLE.slice(0, 3).map(p => {
+  const formattedPeople = PEOPLE.slice(0, MAX_SELECTION).map(p => {
     return {
       id: p.id,
       firstName: p.firstName ?? '',
@@ -78,6 +78,12 @@ export default function DashboardPage() {
   const handleConfirm = (timeRange: string) => {
     alert(`Match Confirmed: ${timeRange}`);
   };
+
+  const getUpgradeText = (currentView: string) => {
+  if (currentView === 'week') return "Upgrade to Pro to see your full week at a glance.";
+  if (currentView === 'month') return "Upgrade to Pro to see your full month at a glance.";
+  return `Need more functionality? Upgrade to Pro.`;
+};
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
@@ -169,7 +175,7 @@ export default function DashboardPage() {
         {!isPro && (view === 'week' || view === 'month') && (
           <div className="w-full max-w-5xl mx-auto">
             <UpgradeToProCard
-              text="Upgrade to Pro for unlimited comparisons and calendar views."
+              text={getUpgradeText(view)}
               actionLabel="Upgrade Now"
               onAction={() => console.log('Upgrade clicked')}
               icon={<Crown className="w-5 h-5 text-yellow-400" />}
@@ -192,7 +198,7 @@ export default function DashboardPage() {
           {!isPro && selectedIds.length >= MAX_SELECTION && (
             <div className="mt-4">
               <UpgradeToProCard
-                text={`Compare more than ${MAX_SELECTION} people — upgrade to Pro.`}
+                text={`Need more participants? Upgrade to Pro for full team access.`}
                 actionLabel="Upgrade to Pro"
                 onAction={() => console.log('Upgrade clicked from picker')}
                 icon={<Crown className="w-4 h-4 text-yellow-400" />}
