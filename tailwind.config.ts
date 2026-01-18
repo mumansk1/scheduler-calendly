@@ -19,6 +19,11 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+    
+      fontFamily: {
+        sans: ['Lato', 'Inter', 'Roboto', 'ui-sans-serif', 'system-ui'],
+      },
+  
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
