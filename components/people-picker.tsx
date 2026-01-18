@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Crown } from 'lucide-react';
 import UpgradeToProCard from './upgrade-to-pro-card';
 
@@ -13,9 +13,9 @@ export type Person = {
 type PeoplePickerProps = {
   people: Person[];
   selectedIds: string[];
-  setSelectedIds: (ids: string[]) => void;
+  setSelectedIds: Dispatch<SetStateAction<string[]>>;
   maxSelection: number;
-  onUpgrade?: () => void; // Added optional callback
+  onUpgrade?: () => void;
 };
 
 export default function PeoplePicker({
@@ -30,16 +30,16 @@ export default function PeoplePicker({
 
   const toggleSelection = (id: string) => {
     if (selectedIds.includes(id)) {
-      setSelectedIds(prev => prev.filter(sid => sid !== id));
+      setSelectedIds((prev) => prev.filter((sid) => sid !== id));
     } else if (!isMaxReached) {
-      setSelectedIds(prev => [...prev, id]);
+      setSelectedIds((prev) => [...prev, id]);
     }
   };
 
   return (
     <div>
       <div className="flex gap-4">
-        {visiblePeople.map(person => {
+        {visiblePeople.map((person) => {
           const isSelected = selectedIds.includes(person.id);
           const isDisabled = !isSelected && isMaxReached;
 
@@ -86,6 +86,7 @@ export default function PeoplePicker({
             text={`You have reached the maximum of ${maxSelection} people. Upgrade to Pro for unlimited comparisons.`}
             actionLabel="Upgrade Now"
             onAction={onUpgrade ?? (() => {})}
+            icon={<Crown className="w-5 h-5 text-yellow-400" />}
           />
         </div>
       )}
