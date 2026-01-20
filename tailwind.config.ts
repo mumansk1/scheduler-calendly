@@ -19,9 +19,22 @@ const config: Config = {
       },
     
       fontFamily: {
-        sans: ['Lato', 'Inter', 'Roboto', 'ui-sans-serif', 'system-ui'],
+        inter: [
+          'Inter',
+          '-apple-system', 
+          'BlinkMacSystemFont',
+          "Segoe UI", 
+          'Roboto', 
+          "Helvetica Neue", 
+          'Arial', 
+          'Lato', 
+          'system-ui'],
+        sans: [
+          'sans-serif',
+          'ui-sans-serif', 
+        ]
       },
-  
+
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
