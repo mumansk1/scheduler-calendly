@@ -15,8 +15,8 @@ export default function Page() {
         {/* Background glow */}
         <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b0764,transparent)] pointer-events-none" />
 
-        {/* Main Content Wrapper - Reduced from 6xl to 5xl for a "little bit" less width */}
-        <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 pt-4 flex flex-col gap-4">
+        {/* Main Content Wrapper - Custom width [832px] is exactly between 3xl and 4xl */}
+        <div className="relative z-10 w-full max-w-[832px] mx-auto px-4 sm:px-6 pt-4 flex flex-col gap-4">
           
           {/* TOP ROW: Welcome (Left) and Login (Right) */}
           <div className="flex flex-col md:flex-row items-stretch justify-between gap-6 md:gap-8 w-full">
@@ -40,7 +40,7 @@ export default function Page() {
         </div>
 
         <footer className="mt-auto relative z-10 py-6 text-center text-gray-600 text-[10px] border-t border-white/5 uppercase tracking-widest">
-          © 2026 whenRUfree. Built for shared availability.
+          © 2026 whenRUfree. BA secure, fast and simple way to share availability.
         </footer>
       </div>
     </>
