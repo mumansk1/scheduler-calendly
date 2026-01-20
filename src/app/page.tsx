@@ -40,7 +40,7 @@ export default function Page() {
         </div>
 
         <footer className="mt-auto relative z-10 py-6 text-center text-gray-600 text-[10px] border-t border-white/5 uppercase tracking-widest">
-          © 2026 whenRUfree. BA secure, fast and simple way to share availability.
+          © 2026 whenRUfree. A secure, fast and simple way to share availability.
         </footer>
       </div>
     </>
