@@ -11,18 +11,25 @@ export default function Page() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <div className="min-h-screen bg-black text-white selection:bg-purple-500/30 font-['Inter',sans-serif] relative overflow-x-hidden">
-        {/* Background glow */}
-        <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b0764,transparent)] pointer-events-none" />
+      <div className="min-h-screen bg-black text-white selection:bg-purple-300/20 font-['Inter',sans-serif] relative overflow-x-hidden">
+        {/* Background glow with muted purple */}
+        <div
+          className="fixed inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(circle at 50% -20%, rgba(107, 70, 193, 0.3), transparent)',
+          }}
+        />
+        
 
-        {/* Main Content Wrapper - Custom width [832px] is exactly between 3xl and 4xl */}
+        {/* Main Content Wrapper - Custom width [832px] */}
         <div className="relative z-10 w-full max-w-[832px] mx-auto px-4 sm:px-6 pt-4 flex flex-col gap-4">
           
           {/* TOP ROW: Welcome (Left) and Login (Right) */}
           <div className="flex flex-col md:flex-row items-stretch justify-between gap-6 md:gap-8 w-full">
             {/* WelcomeBanner - Anchored to the left edge */}
             <div className="flex-1 flex items-center justify-start text-left">
-              <WelcomeBanner className="flex-col justify-center text-left" />
+              <WelcomeBanner className="flex-col justify-center text-left text-gray-300" showTagline={true} />
             </div>
 
             {/* LoginForm - Fixed width on the right edge */}
@@ -39,10 +46,10 @@ export default function Page() {
           </main>
         </div>
 
-        <footer className="mt-auto relative z-10 py-6 text-center text-gray-600 text-[10px] border-t border-white/5 uppercase tracking-widest">
+        <footer className="mt-auto relative z-10 py-6 text-center text-gray-500 text-[10px] border-t border-white/10 uppercase tracking-widest">
           © 2026 whenRUfree. A secure, fast and simple way to share availability.
         </footer>
       </div>
     </>
   );
-}
+} 

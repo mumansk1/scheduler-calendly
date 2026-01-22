@@ -1,13 +1,13 @@
-// app/api/auth/[...nextauth]/route.ts
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import NextAuth, { AuthOptions } from 'next-auth';
 import type { Session } from 'next-auth';
+import { prisma } from '@/lib/db';
+import bcrypt from 'bcryptjs';
 
 export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
-    // 1. Credentials Provider (Email + Password)
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -15,20 +15,32 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // This is where you'll eventually check your database.
-        // For now, we'll allow any login to test the UI.
-        if (credentials?.email && credentials?.password) {
-          return { 
-            id: '1', 
-            name: 'Demo User', 
-            email: credentials.email 
-          };
+        if (!credentials?.email || !credentials.password) {
+          return null;
         }
-        return null;
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email.toLowerCase() },
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isValid) {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        };
       }
     }),
-    
-    // 2. Google Provider (Optional)
+
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -39,7 +51,6 @@ export const authOptions: AuthOptions = {
   },
   pages: {
     signIn: '/auth/signin',
-    // Removed signUp because NextAuth does not support it
   },
   callbacks: {
     async session({ session, token } : { session: Session, token: any }) {

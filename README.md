@@ -43,3 +43,14 @@ npx prisma studio
 
 # Patent, trademark search
 https://www-search.uspto.gov/WWW-search.html
+
+# Color theme: bg-black + style
+<div className="min-h-screen bg-black text-white selection:bg-purple-300/20 font-['Inter',sans-serif] relative overflow-x-hidden">
+        {/* Background glow with muted purple */}
+        <div
+          className="fixed inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(circle at 50% -20%, rgba(107, 70, 193, 0.3), transparent)',
+          }}
+        />

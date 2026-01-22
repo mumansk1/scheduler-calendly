@@ -3,39 +3,24 @@ import type { Config } from 'tailwindcss';
 const config: Config = {
   darkMode: ['class'],
   content: [
-    "./src/**/*.{js,ts,jsx,tsx,mdx}", 
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}", // Add this if your files are in a src folder
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-      },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
-    
-      fontFamily: {
-        inter: [
-          'Inter',
-          '-apple-system', 
-          'BlinkMacSystemFont',
-          "Segoe UI", 
-          'Roboto', 
-          "Helvetica Neue", 
-          'Arial', 
-          'Lato', 
-          'system-ui'],
-        sans: [
-          'sans-serif',
-          'ui-sans-serif', 
-        ]
-      },
-
       colors: {
+        // #20153A Darkets // #4B3187 Darker // #6B46C1 Base
+        brandPurple: '#20153A',  
+        brandPurpleButton: '#4B3187',   
+        brandPurplePanel: '#16181d', 
+        brandGray: {
+          DEFAULT: '#A0AEC0',
+          light: '#CBD5E0',
+          muted: '#718096',
+          dark: '#4A5568',
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -77,6 +62,33 @@ const config: Config = {
           '5': 'hsl(var(--chart-5))',
         },
       },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic':
+          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+      },
+      fontFamily: {
+        inter: [
+          'Inter',
+          '-apple-system', 
+          'BlinkMacSystemFont',
+          "Segoe UI", 
+          'Roboto', 
+          "Helvetica Neue", 
+          'Arial', 
+          'Lato', 
+          'system-ui'
+        ],
+        sans: [
+          'sans-serif',
+          'ui-sans-serif', 
+        ]
+      },
       keyframes: {
         'accordion-down': {
           from: {
@@ -103,4 +115,5 @@ const config: Config = {
   },
   plugins: [require('tailwindcss-animate')],
 };
+
 export default config;

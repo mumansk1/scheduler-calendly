@@ -26,7 +26,7 @@ export default function OnboardingPage() {
         
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8 space-y-4">
           <button 
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push('/availability')}
             className="w-full py-3 bg-purple-600 hover:bg-purple-700 rounded-xl font-bold transition"
           >
             Go to Dashboard
