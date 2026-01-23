@@ -15,7 +15,7 @@ export default function LandingPanel() {
     if (session) {
       router.push('/availability');
     } else {
-      router.push('/signup');
+      router.push('/auth/signup');
     }
   };
 
@@ -33,7 +33,7 @@ export default function LandingPanel() {
 
         <section className="mb-8 text-gray-300 text-lg leading-relaxed w-full">
           <p className="font-bold text-white mb-4 text-xl">
-            Scheduling personal time could be exhausting.
+            Scheduling personal time could be exhausting
           </p>
           <div className="flex justify-center w-full">
             <ul className="list-disc list-inside space-y-2 text-left text-base md:text-lg inline-block">
@@ -48,7 +48,7 @@ export default function LandingPanel() {
           <button
             onClick={handleClick}
             disabled={status === 'loading'}
-            className={`px-10 py-4 bg-brandPurpleButton text-white font-black rounded-full text-lg transition-all shadow-xl shadow-purple-500/20
+            className={`px-10 py-4 bg-brandPurpleButton hover:bg-purple-700 text-white font-black rounded-lg text-lg transition-all shadow-xl shadow-purple-500/20
               ${status === 'loading' ? 'opacity-60 cursor-wait' : 'hover:bg-purple-700 hover:scale-105'}`}
           >
             {status === 'loading' ? 'Checking…' : 'Share my availability'}

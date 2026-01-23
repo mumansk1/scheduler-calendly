@@ -1,56 +1,61 @@
-'use client';
-
-import React from 'react';
-import { signOut } from 'next-auth/react';
+// src/app/page.tsx (or your Page file)
+import Head from 'next/head';
 import WelcomeBanner from '@/components/welcome-banner';
-import TabNavigator from '@/components/tab-navigator';
-import { MAX_SELECTION } from '@/config/defaults';
-import { PEOPLE } from '@/data/mock-data';
-import PeoplePicker from '@/components/people-picker';
+import LoginForm from '@/components/login-form';
+import LandingPanel from '@/components/landing-panel';
 
-import { LogOut } from 'lucide-react';
-
-export default function Availability() {
+export default function Page() {
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-purple-300/20 font-['Inter',sans-serif] relative overflow-x-hidden">
-      {/* Background glow */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(circle at 50% -20%, rgba(107, 70, 193, 0.3), transparent)',
-        }}
-      />
+    <>
+      <Head>
+        <title>whenRUfree — Welcome</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
 
-      {/* Top Header: Welcome Banner + Sign Out */}
-      <header className="relative z-30 px-6 py-6 flex justify-between items-center max-w-7xl mx-auto">
-        <WelcomeBanner 
-          className="text-gray-300" 
-          showTagline={false} 
+      <div className="min-h-screen bg-black text-white selection:bg-purple-300/20 font-['Inter',sans-serif] relative overflow-x-hidden">
+        {/* Background glow with muted purple */}
+        <div
+          className="fixed inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(circle at 50% -20%, rgba(107, 70, 193, 0.3), transparent)',
+          }}
         />
-        
-        <button
-          onClick={() => signOut({ callbackUrl: '/' })}
-          className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors text-sm font-medium bg-white/5 hover:bg-white/10 px-3 py-2 rounded-lg border border-white/10"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Sign out</span>
-        </button>
 
-      </header>
+        {/* Main Content Wrapper - Custom width [832px] */}
+        <div className="relative z-10 w-full max-w-[832px] mx-auto px-4 sm:px-6 pt-4">
+          {/* Grid: left flexible column + right fixed 300px column on md+; stacked on small screens */}
+          <div className="w-full grid gap-6 md:grid-cols-[1fr_300px] items-start">
+            {/* WelcomeBanner (left) */}
+            <div className="order-1 md:order-1 flex items-center">
+              <WelcomeBanner
+                className="flex-col justify-center text-left text-gray-300"
+                showTagline={true}
+              />
+            </div>
 
-      {/* Tab Navigator: Now just the tabs, placed below the header */}
-      <div className="relative z-20">
-        <TabNavigator showSignOut={false} />
-      </div>
+            {/* LoginForm - fixed 300px column on md+ */}
+            <div className="order-2 md:order-2 flex items-start justify-end">
+              <div className="w-full md:w-[300px]">
+                <LoginForm />
+              </div>
+            </div>
 
-      {/* Main Content */}
-      <main className="relative z-10 max-w-7xl mx-auto px-6 mt-12">
-        <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-8">
-          <h2 className="text-xl font-semibold mb-6">Settings</h2>
-          {/* Content goes here */}
+            {/* LandingPanel: spans full grid width but inner wrapper right-aligned
+                and constrained to the left-column width (832 - 300 = 532px)
+                so its right edge lines up with the LoginForm's right edge on md+ */}
+            <div className="order-3 md:order-3 md:col-span-2 flex">
+              <div className="w-full md:ml-auto md:max-w-[532px]">
+                <LandingPanel />
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-    </div>
+
+        <footer className="mt-auto relative z-10 py-6 text-center text-gray-500 text-[10px] border-t border-white/10 uppercase tracking-widest">
+          © 2026 whenRUfree. A secure, fast and simple way to share availability.
+        </footer>
+      </div>
+    </>
   );
 }

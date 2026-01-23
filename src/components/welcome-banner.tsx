@@ -32,9 +32,10 @@ export default function WelcomeBanner({ className = '', showTagline = true }: We
           whenRUfree
         </h1>
       </div>
-
+      
       {showTagline && (
-        <p className="text-white text-lg font-medium opacity-70">
+        // moved down slightly with mt-3 (md:mt-4 for larger screens)
+        <p className="mt-3 md:mt-4 text-white text-lg font-bold opacity-80 tracking-tight uppercase">
           Welcome to the future of shared availability
         </p>
       )}

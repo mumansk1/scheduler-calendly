@@ -11,9 +11,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // #20153A Darkets // #4B3187 Darker // #6B46C1 Base
+        // #20153A Darkets 
+        // #37235F Ultra Dark
+        // #6B46C1 Base Extra Dark
+        // #4B3187 Darker 
+        // #A690DA Lighter
+        // #6B46C1 Base
         brandPurple: '#20153A',  
-        brandPurpleButton: '#4B3187',   
+        brandPurpleButton: '#514371' ,    //rgb(81, 67, 113) 
         brandPurplePanel: '#16181d', 
         brandGray: {
           DEFAULT: '#A0AEC0',
