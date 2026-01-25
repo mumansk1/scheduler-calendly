@@ -1,7 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-
+<Image
+  src="/brand_logo.png"
+  alt="Brand Logo"
+  fill
+  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+/>
 type WelcomeBannerProps = {
   className?: string;
   showTagline?: boolean;

@@ -1,4 +1,3 @@
-// app/api/signup/route.ts
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/db';
@@ -15,7 +14,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Normalize email consistently
     email = String(email).toLowerCase().trim();
 
     const existingUser = await prisma.user.findUnique({
@@ -23,8 +21,6 @@ export async function POST(request: Request) {
     });
 
     if (existingUser) {
-      // Idempotent response: indicate account exists but do not treat as an error.
-      // Client should detect `alreadyExists: true` and switch to Sign In flow.
       return NextResponse.json(
         { alreadyExists: true, message: 'User already exists' },
         { status: 200 }
@@ -36,7 +32,7 @@ export async function POST(request: Request) {
     const user = await prisma.user.create({
       data: {
         email,
-        name: name?.trim() || email,
+        name: name?.trim() || email.split('@')[0], // Default name to email prefix if missing
         password: hashedPassword,
         role: 'client',
       },

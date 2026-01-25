@@ -1,109 +1,152 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import EmailEntry from './email-entry';
+import PasswordEntry from './password-entry';
 
-type LoginFormProps = {
-  className?: string;
-};
+type LoginFormProps = { className?: string };
 
 export default function LoginForm({ className = '' }: LoginFormProps) {
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState<string |  null>(null);
   const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const router = useRouter();
+  const emailInputRef = useRef<HTMLInputElement | null>(null);
+  const passwordInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-
+  const clearNativeValidity = (el?: HTMLInputElement | null) => {
     try {
-      const normalizedEmail = email.toLowerCase().trim();
-
-      if (!normalizedEmail || !password) {
-        setError('Please enter both email and password.');
-        setLoading(false);
-        return;
-      }
-
-      // Check if email exists
-      const checkRes = await fetch('/api/check-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: normalizedEmail }),
-      });
-
-      if (!checkRes.ok) {
-        const errBody = await checkRes.json().catch(() => ({}));
-        setError(errBody.error || `Failed to check email (${checkRes.status})`);
-        setLoading(false);
-        return;
-      }
-
-      const checkData = await checkRes.json();
-
-      if (!checkData.exists) {
-        // Email not registered, redirect to signup with email prefilled
-        router.push(`/auth/signup?email=${encodeURIComponent(normalizedEmail)}`);
-        setLoading(false);
-        return;
-      }
-
-      // Email exists, attempt sign-in
-      const signInResult = await signIn('credentials', {
-        redirect: false,
-        email: normalizedEmail,
-        password,
-      });
-
-      if (signInResult?.error) {
-        setError(signInResult.error || 'Sign in failed. Please check your credentials.');
-      } else if (signInResult?.ok) {
-        router.push('/availability');
-      } else {
-        setError('Sign in failed. Please try again.');
-      }
-    } catch (err: any) {
-      setError(err?.message || 'An unexpected error occurred. Please try again.');
-    } finally {
-      setLoading(false);
+      el?.setCustomValidity('');
+    } catch {
+      // ignore
     }
   };
 
+  const isValidEmailFormat = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
+
+  const safeParseJson = async (res: Response) => {
+    const text = await res.text().catch(() => '');
+    if (!text) return null;
+    try {
+      return JSON.parse(text);
+    } catch {
+      return { text };
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError(null);
+  setPasswordError(null);
+  setEmailError(null);
+
+  const normalizedEmail = (email || '').toLowerCase().trim();
+
+  if (!normalizedEmail) {
+    setEmailError('Please enter your email.');
+    clearNativeValidity(emailInputRef.current);
+    return;
+  }
+
+  if (!isValidEmailFormat(normalizedEmail)) {
+    setEmailError('Please enter a valid email address.');
+    clearNativeValidity(emailInputRef.current);
+    return;
+  }
+
+  if (!password) {
+    setPasswordError('Please enter password');
+    clearNativeValidity(passwordInputRef.current);
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const checkRes = await fetch('/api/auth/check-account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+      body: JSON.stringify({ email: normalizedEmail }),
+    });
+
+    if (!checkRes.ok && checkRes.status !== 409) {
+      const parsed = (await safeParseJson(checkRes)) || {};
+      setError(parsed?.error || `Failed to check email (${checkRes.status})`);
+      setLoading(false);
+      return;
+    }
+
+    const checkBody = (await safeParseJson(checkRes)) || {};
+    const exists = Boolean(checkBody.exists || checkBody.alreadyExists) || checkRes.status === 409;
+
+    if (!exists) {
+      // User does not exist, create account
+      const createRes = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: normalizedEmail, password }),
+      });
+
+      if (!createRes.ok) {
+        const parsed = (await safeParseJson(createRes)) || {};
+        setError(parsed?.error || 'Failed to create a new account');
+        setLoading(false);
+        return;
+      }
+
+      // Account created successfully, redirect to onboarding
+      router.push('/onboarding');
+      setLoading(false);
+      return;
+    }
+
+    // User exists, attempt sign in
+    const signInResult = await signIn('credentials', {
+      redirect: false,
+      email: normalizedEmail,
+      password,
+    });
+
+    if (signInResult?.ok) {
+      router.push('/availability');
+    } else if (signInResult?.error) {
+      if (signInResult.error === 'CredentialsSignin') {
+        setPasswordError('You entered an invalid password');
+      } else {
+        setError(signInResult.error);
+      }
+    } else {
+      setError('Sign in failed. Please try again.');
+    }
+  } catch (err: any) {
+    console.error('LoginForm submit error:', err);
+    setError(err?.message || 'An unexpected error occurred. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div
-      className={`relative w-full max-w-[348px] bg-[#16181d] border border-white/10 p-3 rounded-xl shadow-2xl flex flex-col ${className}`}
+      className={`relative w-full max-w-[420px] bg-[#16181d] border border-white/10 p-3 rounded-xl shadow-2xl flex flex-col ${className}`}
       style={{ fontFamily: '"Inter", sans-serif' }}
     >
-      {/* Google Sign In */}
+      {/* Google Sign In (unchanged) */}
       <button
         onClick={() => signIn('google', { callbackUrl: '/availability' })}
-        className="w-full flex items-center justify-center gap-2 bg-[#2f3b66] text-white h-7 rounded-full font-bold hover:bg-[#283253] transition-all active:scale-[0.98] px-3 shadow-lg"
+        className="w-full flex items-center justify-center gap-2 bg-[#2f3b66] text-white h-8 rounded-full font-bold hover:bg-[#283253] transition-all active:scale-[0.98] px-3 shadow-lg"
         type="button"
       >
-        <div className="bg-white p-0.5 rounded-full flex-shrink-0">
-          {/* Google SVG icon */}
-          <svg
-            className="w-4 h-4"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path fill="#4285F4" d="M23.64 12.204c0-.828-.074-1.62-.213-2.376H12v4.5h6.36a5.43 5.43 0 01-2.34 3.57v2.97h3.78c2.22-2.04 3.5-5.04 3.5-8.664z" />
-            <path fill="#34A853" d="M12 24c3.24 0 5.964-1.08 7.952-2.928l-3.78-2.97c-1.05.7-2.4 1.11-4.172 1.11-3.21 0-5.928-2.16-6.9-5.07H1.26v3.18A11.997 11.997 0 0012 24z" />
-            <path fill="#FBBC05" d="M5.1 14.142a7.2 7.2 0 010-4.284V6.678H1.26a11.997 11.997 0 000 10.644l3.84-3.18z" />
-            <path fill="#EA4335" d="M12 4.77c1.764 0 3.348.606 4.59 1.8l3.44-3.44C17.964 1.29 15.24 0 12 0 7.26 0 3.18 2.7 1.26 6.678l3.84 3.18c.972-2.91 3.69-5.07 6.9-5.07z" />
-          </svg>
-        </div>
         <span className="truncate text-[11px]">Sign in or Sign up with Google</span>
       </button>
 
-      {/* Divider */}
-      <div className="relative py-1.5 w-full">
+      <div className="relative py-1.5 w-full mt-3">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t border-white/5" />
         </div>
@@ -112,26 +155,46 @@ export default function LoginForm({ className = '' }: LoginFormProps) {
         </div>
       </div>
 
-      {/* Email + Password Form */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-2 mt-3" autoComplete="off">
         <input
-          type="email"
-          placeholder="Email address"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full h-7 bg-[#1e2128] border border-white/10 rounded-lg px-2 text-sm focus:border-purple-500 outline-none text-white placeholder:text-gray-500"
-          disabled={loading}
+          type="text"
+          name="fake-username"
+          autoComplete="username"
+          tabIndex={-1}
+          aria-hidden
+          style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, width: 0, pointerEvents: 'none' }}
         />
-
         <input
           type="password"
-          placeholder="Password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full h-7 bg-[#1e2128] border border-white/10 rounded-lg px-2 text-sm focus:border-purple-500 outline-none text-white placeholder:text-gray-500"
-          disabled={loading}
+          name="fake-password"
+          autoComplete="new-password"
+          tabIndex={-1}
+          aria-hidden
+          style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, width: 0, pointerEvents: 'none' }}
+        />
+
+        <EmailEntry
+          emailText={email}
+          className=""
+          onEmailChange={(val) => {
+            setEmail(val);
+            setEmailError(null);
+            setError(null);
+          }}
+          error={emailError}
+          ref={emailInputRef}
+        />
+
+        <PasswordEntry
+          passwordText={password}
+          className=""
+          onPasswordChange={(val) => {
+            setPassword(val);
+            setPasswordError(null);
+            setError(null);
+          }}
+          error={passwordError}
+          ref={passwordInputRef}
         />
 
         {error && (
@@ -143,7 +206,7 @@ export default function LoginForm({ className = '' }: LoginFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full h-7 bg-brandPurpleButton hover:bg-purple-700 text-white rounded-lg font-bold text-[12px] hover:bg-[#252932] transition-all active:scale-[0.98] border border-white/5 disabled:opacity-50"
+          className="w-full h-8 bg-brandPurpleButton hover:bg-purple-700 text-white rounded-lg font-bold text-[12px] transition-all active:scale-[0.98] border border-white/5 disabled:opacity-50"
         >
           {loading ? 'Processing...' : 'Sign in or Sign up with Email'}
         </button>

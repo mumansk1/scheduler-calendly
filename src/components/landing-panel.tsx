@@ -44,17 +44,6 @@ export default function LandingPanel() {
           </div>
         </section>
 
-        <div className="mb-10 w-full flex justify-center">
-          <button
-            onClick={handleClick}
-            disabled={status === 'loading'}
-            className={`px-10 py-4 bg-brandPurpleButton hover:bg-purple-700 text-white font-black rounded-lg text-lg transition-all shadow-xl shadow-purple-500/20
-              ${status === 'loading' ? 'opacity-60 cursor-wait' : 'hover:bg-purple-700 hover:scale-105'}`}
-          >
-            {status === 'loading' ? 'Checking…' : 'Share my availability'}
-          </button>
-        </div>
-
         <section className="w-full">
           <h2 className="text-base md:text-lg font-black text-purple-300 mb-4 tracking-[0.2em] ">
             whenRUfree does the math—so you don’t have to

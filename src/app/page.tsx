@@ -2,6 +2,8 @@ import Head from 'next/head';
 import WelcomeBanner from '@/components/welcome-banner';
 import LoginForm from '@/components/login-form';
 import LandingPanel from '@/components/landing-panel';
+import Footer from '@/components/footer';
+
 
 export default function Page() {
   return (
@@ -21,8 +23,8 @@ export default function Page() {
           }}
         />
         
-
         {/* Main Content Wrapper - Custom width [832px] */}
+       
         <div className="relative z-10 w-full max-w-[832px] mx-auto px-4 sm:px-6 pt-4 flex flex-col gap-4">
           
           {/* TOP ROW: Welcome (Left) and Login (Right) */}
@@ -46,8 +48,9 @@ export default function Page() {
           </main>
         </div>
 
-        <footer className="mt-auto relative z-10 py-6 text-center text-gray-500 text-[10px] border-t border-white/10 uppercase tracking-widest">
-          © 2026 whenRUfree. A secure, fast and simple way to share availability.
+      { /* Footer */ }
+        <footer className="mt-auto relative z-10 py-6 text-center text-gray-500 text-[10px] uppercase tracking-widest">
+          <Footer />
         </footer>
       </div>
     </>
