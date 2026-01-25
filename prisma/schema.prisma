@@ -413,7 +413,7 @@ model users {
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model User {
   id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email               String
+  email               String    @unique
   name                String?
   emailVerified       DateTime? @db.Timestamptz(6)
   image               String?
