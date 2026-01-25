@@ -38,7 +38,7 @@ export const DEFAULT_PRESETS: Preset[] = [
   { id: '6', category: 'Environment', tag: 'Casual/Messy', icon: '🏠', description: "My house is a disaster, but the door is open." },
   { id: '7', category: 'Activity', tag: 'Walking Date', icon: '👟', description: "Let's move so I can hit my steps." },
   { id: '8', category: 'Activity', tag: 'Caffeine Fix', icon: '☕', description: "Don't talk to me until we get to the counter." },
-  { id: '9', category: 'Activity', tag: 'Parking Info', icon: '🚗', description: "Parking is tricky—check the app notes." },
+  { id: '9', category: 'Activity', tag: 'Parking Info', icon: '🚗', description: "Parking is tricky - check the map or give me a call." },
   { id: '10', category: 'Energy', tag: 'Low Battery', icon: '🪫', description: "I need a low-energy hang. Pajamas welcome." },
   { id: '11', category: 'Energy', tag: 'Venting Session', icon: '🗣️', description: "I have things to get off my chest." },
 ];
