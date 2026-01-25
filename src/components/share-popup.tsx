@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 type SharePopupProps = {
   onClose: () => void;
   onShareMethod: (method: 'email' | 'text') => void;
-  smsText?: string; // The SMS text to copy and share
+  smsText?: string; // full message body to copy and prefill
 };
 
 export default function SharePopup({ onClose, onShareMethod, smsText = '' }: SharePopupProps) {
@@ -21,12 +21,28 @@ export default function SharePopup({ onClose, onShareMethod, smsText = '' }: Sha
     }
   };
 
+  const smsHref = (body: string) => {
+    // Best-effort prefill for many mobile browsers
+    return `sms:&body=${encodeURIComponent(body)}`;
+  };
+
   const handleTextShare = async () => {
-    if (smsText) {
-      await copyToClipboard(smsText);
+    // parent should pass the fully-constructed message in smsText
+    const finalMessage = smsText;
+
+    // copy the full message so the user can paste if the prefill doesn't work
+    if (finalMessage) {
+      await copyToClipboard(finalMessage);
     }
-    // Open SMS app without body so user can pick recipient and paste
-    window.location.href = 'sms:';
+
+    // Try to open SMS composer with prefilled body (best-effort)
+    try {
+      window.location.href = smsHref(finalMessage);
+    } catch (err) {
+      // fallback to blank sms composer
+      window.location.href = 'sms:';
+    }
+
     onShareMethod('text');
     onClose();
   };
@@ -47,7 +63,7 @@ export default function SharePopup({ onClose, onShareMethod, smsText = '' }: Sha
         <h2 id="share-popup-title" className="text-xl font-semibold mb-4">
           Share your availability
         </h2>
-        
+
         <div className="flex flex-col gap-3">
           <button
             onClick={handleEmailShare}
@@ -64,7 +80,7 @@ export default function SharePopup({ onClose, onShareMethod, smsText = '' }: Sha
               Share via Text
             </button>
             <p className="mt-2 text-xs text-gray-400 max-w-xs mx-auto">
-              After the SMS app opens, please select a recipient and paste the copied message to send.
+              The app link and your schedule will be copied. If your device supports a pre-filled text body the SMS app will open with the message already inserted. If not, just pick a recipient and paste the copied message.
             </p>
           </div>
 
@@ -85,4 +101,3 @@ export default function SharePopup({ onClose, onShareMethod, smsText = '' }: Sha
     </div>
   );
 }
-

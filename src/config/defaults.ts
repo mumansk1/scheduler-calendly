@@ -3,7 +3,7 @@ import {DayAvailability, Preset} from '@/config/types';
 export const APP_NAME = 'whenRUfree';
 export const MAX_SELECTION = 4;
 export const DEFAULT_TIMEZONE = 'EST';
-export const SHARE_LINK_BASE = 'https://whenrufree.com/schedule';
+export const DEFAULT_APP_LINK = 'https://whenrufree.com/schedule';
 
 export const NAVIGATION_LINKS = [
   { label: 'Dashboard', href: '/dashboard' },

@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect, forwardRef } from 'react';
 
 type EmailEntryProps = {
@@ -10,16 +11,13 @@ type EmailEntryProps = {
 const EmailEntry = forwardRef<HTMLInputElement, EmailEntryProps>(
   ({ emailText = '', className = '', error = null, onEmailChange }, ref) => {
     const [email, setEmail] = useState(emailText);
-    const [showErrorPlaceholder, setShowErrorPlaceholder] = useState(false);
 
     useEffect(() => {
       setEmail(emailText);
     }, [emailText]);
 
-    useEffect(() => {
-      // Show error message inside input as placeholder only if error exists
-      setShowErrorPlaceholder(!!error);
-    }, [error]);
+    // Show the error message as placeholder only when the field is empty.
+    const placeholderText = !email && error ? error : 'Email address';
 
     return (
       <div className={className} style={{ position: 'relative' }}>
@@ -32,18 +30,19 @@ const EmailEntry = forwardRef<HTMLInputElement, EmailEntryProps>(
           name="email"
           type="email"
           inputMode="email"
-          placeholder={showErrorPlaceholder ? error || '' : 'Email address'}
-          autoComplete="off"
+          placeholder={placeholderText}
+          autoComplete="email"
+          autoCapitalize="none"
+          autoCorrect="off"
           spellCheck={false}
-          value={showErrorPlaceholder ? '' : email}
+          value={email}
           onChange={(e) => {
             setEmail(e.target.value);
             onEmailChange?.(e.target.value);
           }}
-
           className={`w-full h-10 px-3 rounded-lg text-sm bg-[#1e2128] border ${
-                error ? 'border-red-400 placeholder:text-red-400' : 'border-white/10 placeholder:text-gray-500'
-            } outline-none text-white`}
+            error ? 'border-red-400 placeholder:text-red-400' : 'border-white/10 placeholder:text-gray-500'
+          } outline-none text-white`}
           aria-invalid={!!error}
           aria-describedby={error ? 'email-error' : undefined}
           ref={ref}

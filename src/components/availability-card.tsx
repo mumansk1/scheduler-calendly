@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import SharePopup from '@/components/share-popup';
 import { DayAvailability, SlotState } from '@/config/types';
+import { DEFAULT_APP_LINK } from '@/config/defaults'
 
 type AvailabilityCardProps = {
   className?: string;
@@ -89,7 +90,7 @@ export default function AvailabilityCard({
       .filter((text) => text.includes('-'))
       .join('\n\n');
 
-    const availabilityHeader = 'Here is my availability:';
+    const availabilityHeader = `Use ${DEFAULT_APP_LINK}  to see if my times work for you.\n\nHere is my availability:`;
     return formatAvailability
       ? preferenceNote
         ? `${availabilityHeader}\n${formatAvailability}\n\nNote:\n${preferenceNote}`
