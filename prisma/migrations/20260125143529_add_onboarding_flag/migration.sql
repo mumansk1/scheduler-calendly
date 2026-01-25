@@ -35,6 +35,7 @@ CREATE TABLE "User" (
     "image" TEXT,
     "password" TEXT,
     "role" TEXT NOT NULL DEFAULT 'client',
+    "onboardingCompleted" BOOLEAN NOT NULL DEFAULT FALSE,  -- Add this line
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")

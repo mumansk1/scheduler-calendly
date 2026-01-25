@@ -12,34 +12,40 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) {
-          return null;
-        }
+        if (!credentials?.email || !credentials.password) return null;
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email.toLowerCase() },
+        const email = credentials.email.toLowerCase().trim();
+
+        // Use findFirst in case email is not marked UNIQUE in Prisma introspected schema
+        const user = await prisma.user.findFirst({
+          where: { email },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            password: true,
+            role: true,
+            onboardingCompleted: true,
+          },
         });
 
-        if (!user || !user.password) {
-          return null;
-        }
+        if (!user || !user.password) return null;
 
         const isValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isValid) {
-          return null;
-        }
+        if (!isValid) return null;
 
         return {
           id: user.id,
-          name: user.name,
+          name: user.name ?? null,
           email: user.email,
-          role: user.role,
-        };
-      }
+          role: user.role ?? null,
+          onboardingCompleted: user.onboardingCompleted ?? false,
+        } as any;
+      },
     }),
 
     GoogleProvider({
@@ -57,48 +63,63 @@ export const authOptions: AuthOptions = {
   },
 
   callbacks: {
-    // Runs after a successful sign-in
+    // Runs after a successful sign-in (both credentials and providers)
     async signIn({ user, account }: any) {
       try {
+        // Google / OAuth provider: ensure a User row exists and set isNewUser flag
         if (account?.provider === 'google') {
-          const email = user?.email;
-          if (!email) return true; // let NextAuth handle if no email
+          const email = (user?.email || '').toLowerCase().trim();
+          if (!email) {
+            // No email in OAuth profile (rare) — allow sign-in but don't attempt DB logic
+            return true;
+          }
 
-          // Try to find existing user by email
-          const existing = await prisma.user.findUnique({
-            where: { email: email.toLowerCase() },
+          // Try to find existing user and include onboardingCompleted
+          const existing = await prisma.user.findFirst({
+            where: { email },
+            select: { id: true, onboardingCompleted: true },
           });
 
           if (!existing) {
-            // Create minimal user row. DO NOT include fields that don't exist in your schema.
-            const created = await prisma.user.create({
-              data: {
-                email: email.toLowerCase(),
-                name: user?.name ?? '',
-                role: 'user', // adjust default role if needed
-                // if you DO have onboardingCompleted or similar, add it here
-              },
-            });
+            // Create minimal user row (password null for OAuth users)
+            try {
+              const created = await prisma.user.create({
+                data: {
+                  email,
+                  name: user?.name ?? null,
+                  image: user?.image ?? null,
+                  role: 'client',
+                  password: null,
+                  onboardingCompleted: false,
+                },
+                select: { id: true, onboardingCompleted: true },
+              });
 
-            // Attach id & new-user flag to user object for jwt callback
-            (user as any).id = created.id;
-            (user as any).isNewUser = true;
+              (user as any).id = created.id;
+              (user as any).isNewUser = true; // newly created -> needs onboarding
+            } catch (err) {
+              console.error('Failed to create user row in signIn callback:', err);
+              // block sign-in so user doesn't get redirected to availability while DB create failed
+              return false;
+            }
           } else {
             (user as any).id = existing.id;
-            (user as any).isNewUser = false;
+            (user as any).isNewUser = !existing.onboardingCompleted; // true if onboarding incomplete
           }
         } else {
-          // Credentials provider already returns existing user from authorize()
-          (user as any).isNewUser = false;
+          // Credentials provider: authorize returned onboardingCompleted already
+          // Mark isNewUser based on onboardingCompleted value
+          (user as any).isNewUser = !(user as any).onboardingCompleted;
         }
       } catch (err) {
-        // Log but don't block sign-in — client will run profile check and handle onboarding
-        console.error('signIn callback error (non-fatal):', err);
+        // Log and block sign-in on unexpected errors so we don't incorrectly allow redirect
+        console.error('signIn callback error:', err);
+        return false;
       }
       return true;
     },
 
-    // Copy isNewUser and user id into the token
+    // Persist id and isNewUser into the token
     async jwt({ token, user }: any) {
       if (user) {
         if ((user as any).id) token.sub = (user as any).id;
@@ -110,7 +131,7 @@ export const authOptions: AuthOptions = {
     // Expose id and isNewUser on the client session
     async session({ session, token }: { session: Session; token: any }) {
       if (session.user) {
-        // @ts-ignore
+        // @ts-ignore - augmenting session.user
         session.user.id = token.sub;
         (session.user as any).isNewUser = Boolean(token.isNewUser);
       }

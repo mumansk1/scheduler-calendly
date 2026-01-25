@@ -1,22 +1,55 @@
 'use client';
 import React, { useState } from 'react';
-import Head from 'next/head';
 import { useRouter } from 'next/navigation';
+import Head from 'next/head';
+import { useSession } from 'next-auth/react';
+
 import WelcomeBanner from '@/components/welcome-banner';
 import WakingHours from '@/components/waking-hours';
 import PreferenceNote from '@/components/preference-note';
 import AvailabilityCard from '@/components/availability-card';
 import Footer from '@/components/footer';
 
-import { sampleAvailability } from '@/data/mock-data'
+import { sampleAvailability } from '@/data/mock-data';
 
 export default function Onboarding() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [preferenceNote, setPreferenceNote] = useState<string>('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleStart = () => {
-    // Navigate to the main availability view (adjust route if needed)
-    router.push('/availability');
+  const handleStart = async () => {
+    setError(null);
+
+    // Optionally ensure user is signed in
+    if (status !== 'authenticated') {
+      setError('You must be signed in to complete onboarding.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/auth/complete-onboarding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // No body required — server will use session to identify the user.
+        // If your environment requires credentials flag, the browser will still send cookies on same-origin.
+      });
+
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload?.error || `Failed to complete onboarding (${res.status})`);
+      }
+
+      // Success — navigate to availability
+      router.push('/availability');
+    } catch (err: any) {
+      console.error('Failed to complete onboarding:', err);
+      setError(err?.message || 'Failed to complete onboarding. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -87,20 +120,26 @@ export default function Onboarding() {
             <AvailabilityCard className="mt-3" preferenceNote={preferenceNote} dailyAvailability={sampleAvailability} />
           </section>
 
-          {/* Step 4: inside the same frame with the other steps */}
           <section className="w-full">
             <h3 className="text-lg font-semibold mb-1 text-white">Step 4. You’re all set!</h3>
             <p className="text-gray-400 mb-4 text-sm">
               Now that you’ve set your waking hours and preferences, your availability is ready to share. You can always update these later in settings.
             </p>
 
+            {error && (
+              <div className="text-sm text-red-400 bg-white/5 p-2 rounded-md mb-3">
+                {error}
+              </div>
+            )}
+
             <div className="flex justify-start sm:justify-start">
               <button
                 onClick={handleStart}
-                className="bg-brandPurpleButton hover:bg-purple-600 rounded py-3 px-6 font-semibold text-white transition"
+                className="bg-brandPurpleButton hover:bg-purple-600 rounded py-3 px-6 font-semibold text-white transition disabled:opacity-60"
                 aria-label="Start using whenRUfree"
+                disabled={loading}
               >
-                Start Using whenRUfree
+                {loading ? 'Finishing setup…' : 'Start Using whenRUfree'}
               </button>
             </div>
           </section>

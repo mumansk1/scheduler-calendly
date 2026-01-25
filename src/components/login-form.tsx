@@ -1,4 +1,4 @@
-// src/components/login-form.tsx (or wherever your file is)
+// src/components/login-form.tsx
 'use client';
 
 import React, { useState, useRef } from 'react';
@@ -11,7 +11,7 @@ type LoginFormProps = { className?: string };
 
 export default function LoginForm({ className = '' }: LoginFormProps) {
   const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState<string |  null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -42,6 +42,50 @@ export default function LoginForm({ className = '' }: LoginFormProps) {
     }
   };
 
+  // Check if user exists in User table
+  const checkUserExists = async (emailAddress: string) => {
+    try {
+      const normalized = (emailAddress || '').toLowerCase().trim();
+      const res = await fetch('/api/user/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: normalized }),
+      });
+
+      if (!res.ok) {
+        const parsed = (await safeParseJson(res)) || {};
+        throw new Error(parsed?.error || `Failed to check user (${res.status})`);
+      }
+
+      const data = await res.json();
+      return Boolean(data?.exists);
+    } catch (err) {
+      console.error('Error checking user existence:', err);
+      // Favor "doesn't exist" when check fails so callers can create the user safely.
+      return false;
+    }
+  };
+
+  // Create user record in User table
+  // Accept either a string email or an object with fields.
+  async function createUserRecord(user: string | { email: string; name?: string; image?: string }) {
+    const payload =
+      typeof user === 'string'
+        ? { email: user }
+        : { email: user.email, name: user.name, image: user.image };
+
+    const response = await fetch('/api/user/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      const errorBody = await safeParseJson(response);
+      throw new Error(errorBody?.error || `Failed to create user (${response.status})`);
+    }
+    return response.json();
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -71,6 +115,7 @@ export default function LoginForm({ className = '' }: LoginFormProps) {
     setLoading(true);
 
     try {
+      // First: check auth/account existence (this endpoint should return info about auth or create it)
       const checkRes = await fetch('/api/auth/check-account', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
@@ -84,11 +129,16 @@ export default function LoginForm({ className = '' }: LoginFormProps) {
         return;
       }
 
+      // safe parse the response body (may be JSON or empty)
       const checkBody = (await safeParseJson(checkRes)) || {};
-      const exists = Boolean(checkBody.exists || checkBody.alreadyExists) || checkRes.status === 409;
+      // The check endpoint may return { exists, alreadyExists, created, onboardingCompleted, ... }
+      // Detect whether an auth account exists (varies by implementation)
+      const authAccountExists =
+        Boolean(checkBody.exists || checkBody.alreadyExists || checkBody.authExists) ||
+        checkRes.status === 409;
 
-      if (!exists) {
-        // User does not exist, create account
+      // If auth account doesn't exist, create it (credentials sign-up endpoint)
+      if (!authAccountExists) {
         const createRes = await fetch('/api/auth/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -102,13 +152,14 @@ export default function LoginForm({ className = '' }: LoginFormProps) {
           return;
         }
 
-        // Account created successfully, redirect to onboarding
+        // Create user record in User table (pass object form)
+        await createUserRecord({ email: normalizedEmail });
         router.push('/onboarding');
         setLoading(false);
         return;
       }
 
-      // User exists, attempt sign in
+      // Auth account exists, attempt sign in
       const signInResult = await signIn('credentials', {
         redirect: false,
         email: normalizedEmail,
@@ -116,7 +167,17 @@ export default function LoginForm({ className = '' }: LoginFormProps) {
       });
 
       if (signInResult?.ok) {
-        router.push('/availability');
+        // After successful sign-in, check if user exists in User table
+        const userExists = await checkUserExists(normalizedEmail);
+
+        if (userExists) {
+          // User exists in User table, redirect to availability
+          router.push('/availability');
+        } else {
+          // User doesn't exist in User table, create record and redirect to onboarding
+          await createUserRecord({ email: normalizedEmail });
+          router.push('/onboarding');
+        }
       } else if (signInResult?.error) {
         if (signInResult.error === 'CredentialsSignin') {
           setPasswordError('You entered an invalid password');

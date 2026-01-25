@@ -23,8 +23,10 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@prisma/*": ["./prisma/*"]
     }
   },
   "include": [
@@ -36,7 +38,7 @@
     ".next/dev/types/**/*.ts",
     "out/types/**/*.ts",
     "out/dev/types/**/*.ts"
-  ],
+, "prisma/prisma.config.mjs"  ],
   "exclude": [
     "node_modules"
   ]

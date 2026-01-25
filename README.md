@@ -56,24 +56,7 @@ https://www-search.uspto.gov/WWW-search.html
         />
 
 
-create table public.profiles (
-  id uuid primary key references auth.users(id) on delete cascade,
-  email text unique not null,
-  full_name text,
-  onboarding_completed boolean not null default false,
-  created_at timestamp with time zone not null default now(),
-  updated_at timestamp with time zone not null default now()
-);
-
--- Optional: trigger to auto-update updated_at on row update
-create or replace function update_updated_at_column()
-returns trigger as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$ language plpgsql;
-
-create trigger update_profiles_updated_at
-before update on public.profiles
-for each row execute procedure update_updated_at_column();
+------------------
+npx prisma db pull --url $DATABASE_URL
+npx prisma validate
+npx prisma generate
