@@ -6,13 +6,6 @@ export const DEFAULT_TIMEZONE = 'EST';
 //export const DEFAULT_APP_LINK = 'https://whenrufree.com/schedule';
 export const DEFAULT_APP_LINK = 'https://scheduler-calendly.vercel.app/';
 
-export const NAVIGATION_LINKS = [
-  { label: 'Dashboard', href: '/dashboard' },
-  { label: 'Availability', href: '/availability' },
-  { label: 'Connections', href: '/connections'},
-  { label: 'Settings', href: '/settings' },
-];
-
 export const UI_STRINGS = {
   SHARE_LABEL: 'Copy this link to share when you are free',
   NO_MATCHES_TITLE: 'No matches found',

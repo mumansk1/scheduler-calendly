@@ -1,3 +1,4 @@
+// src/components/login-form.tsx (or wherever your file is)
 'use client';
 
 import React, { useState, useRef } from 'react';
@@ -42,104 +43,105 @@ export default function LoginForm({ className = '' }: LoginFormProps) {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError(null);
-  setPasswordError(null);
-  setEmailError(null);
+    e.preventDefault();
+    setError(null);
+    setPasswordError(null);
+    setEmailError(null);
 
-  const normalizedEmail = (email || '').toLowerCase().trim();
+    const normalizedEmail = (email || '').toLowerCase().trim();
 
-  if (!normalizedEmail) {
-    setEmailError('Please enter your email.');
-    clearNativeValidity(emailInputRef.current);
-    return;
-  }
-
-  if (!isValidEmailFormat(normalizedEmail)) {
-    setEmailError('Please enter a valid email address.');
-    clearNativeValidity(emailInputRef.current);
-    return;
-  }
-
-  if (!password) {
-    setPasswordError('Please enter password');
-    clearNativeValidity(passwordInputRef.current);
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    const checkRes = await fetch('/api/auth/check-account', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-      body: JSON.stringify({ email: normalizedEmail }),
-    });
-
-    if (!checkRes.ok && checkRes.status !== 409) {
-      const parsed = (await safeParseJson(checkRes)) || {};
-      setError(parsed?.error || `Failed to check email (${checkRes.status})`);
-      setLoading(false);
+    if (!normalizedEmail) {
+      setEmailError('Please enter your email.');
+      clearNativeValidity(emailInputRef.current);
       return;
     }
 
-    const checkBody = (await safeParseJson(checkRes)) || {};
-    const exists = Boolean(checkBody.exists || checkBody.alreadyExists) || checkRes.status === 409;
+    if (!isValidEmailFormat(normalizedEmail)) {
+      setEmailError('Please enter a valid email address.');
+      clearNativeValidity(emailInputRef.current);
+      return;
+    }
 
-    if (!exists) {
-      // User does not exist, create account
-      const createRes = await fetch('/api/auth/signup', {
+    if (!password) {
+      setPasswordError('Please enter password');
+      clearNativeValidity(passwordInputRef.current);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const checkRes = await fetch('/api/auth/check-account', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: normalizedEmail, password }),
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+        body: JSON.stringify({ email: normalizedEmail }),
       });
 
-      if (!createRes.ok) {
-        const parsed = (await safeParseJson(createRes)) || {};
-        setError(parsed?.error || 'Failed to create a new account');
+      if (!checkRes.ok && checkRes.status !== 409) {
+        const parsed = (await safeParseJson(checkRes)) || {};
+        setError(parsed?.error || `Failed to check email (${checkRes.status})`);
         setLoading(false);
         return;
       }
 
-      // Account created successfully, redirect to onboarding
-      router.push('/onboarding');
-      setLoading(false);
-      return;
-    }
+      const checkBody = (await safeParseJson(checkRes)) || {};
+      const exists = Boolean(checkBody.exists || checkBody.alreadyExists) || checkRes.status === 409;
 
-    // User exists, attempt sign in
-    const signInResult = await signIn('credentials', {
-      redirect: false,
-      email: normalizedEmail,
-      password,
-    });
+      if (!exists) {
+        // User does not exist, create account
+        const createRes = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: normalizedEmail, password }),
+        });
 
-    if (signInResult?.ok) {
-      router.push('/availability');
-    } else if (signInResult?.error) {
-      if (signInResult.error === 'CredentialsSignin') {
-        setPasswordError('You entered an invalid password');
-      } else {
-        setError(signInResult.error);
+        if (!createRes.ok) {
+          const parsed = (await safeParseJson(createRes)) || {};
+          setError(parsed?.error || 'Failed to create a new account');
+          setLoading(false);
+          return;
+        }
+
+        // Account created successfully, redirect to onboarding
+        router.push('/onboarding');
+        setLoading(false);
+        return;
       }
-    } else {
-      setError('Sign in failed. Please try again.');
+
+      // User exists, attempt sign in
+      const signInResult = await signIn('credentials', {
+        redirect: false,
+        email: normalizedEmail,
+        password,
+      });
+
+      if (signInResult?.ok) {
+        router.push('/availability');
+      } else if (signInResult?.error) {
+        if (signInResult.error === 'CredentialsSignin') {
+          setPasswordError('You entered an invalid password');
+        } else {
+          setError(signInResult.error);
+        }
+      } else {
+        setError('Sign in failed. Please try again.');
+      }
+    } catch (err: any) {
+      console.error('LoginForm submit error:', err);
+      setError(err?.message || 'An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
-  } catch (err: any) {
-    console.error('LoginForm submit error:', err);
-    setError(err?.message || 'An unexpected error occurred. Please try again.');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
+
   return (
     <div
       className={`relative w-full max-w-[420px] bg-[#16181d] border border-white/10 p-3 rounded-xl shadow-2xl flex flex-col ${className}`}
       style={{ fontFamily: '"Inter", sans-serif' }}
     >
-      {/* Google Sign In (unchanged) */}
+      {/* Google Sign In now returns to an intermediate callback page that decides final redirect */}
       <button
-        onClick={() => signIn('google', { callbackUrl: '/availability' })}
+        onClick={() => signIn('google', { callbackUrl: '/auth/oauth-callback' })}
         className="w-full flex items-center justify-center gap-2 bg-[#2f3b66] text-white h-8 rounded-full font-bold hover:bg-[#283253] transition-all active:scale-[0.98] px-3 shadow-lg"
         type="button"
       >

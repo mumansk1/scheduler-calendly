@@ -8,17 +8,6 @@ export default function LandingPanel() {
   const router = useRouter();
   const { data: session, status } = useSession(); // status: 'loading' | 'authenticated' | 'unauthenticated'
 
-  const handleClick = () => {
-    // If session is loading, you may choose to show a loader or prevent navigation.
-    if (status === 'loading') return;
-
-    if (session) {
-      router.push('/availability');
-    } else {
-      router.push('/auth/signup');
-    }
-  };
-
   return (
     <div
       className="bg-white/5 backdrop-blur-md border border-white/10 text-white flex flex-col items-center justify-center rounded-2xl p-8 md:p-12 w-full"
