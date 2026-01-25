@@ -1,7 +1,7 @@
-// PreferencePresets.tsx
+// preference-presets.tsx
 'use client';
 import React from 'react';
-import { Preset } from '@/config/defaults';
+import { Preset } from '@/config/types';
 
 type PreferencePresetsProps = {
   presets: Preset[];

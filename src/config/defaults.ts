@@ -1,4 +1,4 @@
-import {DayAvailability, Preset, TimeSlot} from '@/config/types';
+import {DayAvailability, Preset} from '@/config/types';
 
 export const APP_NAME = 'whenRUfree';
 export const MAX_SELECTION = 4;
