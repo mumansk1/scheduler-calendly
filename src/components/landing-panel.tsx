@@ -28,36 +28,52 @@ export default function LandingPanel() {
         <h1 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight tracking-tight">
           Prioritize human connection,
           <br />
-          <span className="text-purple-300">not calendar management.</span>
+          <span className="text-purple-300">not calendar management</span>
         </h1>
 
         <section className="mb-8 text-gray-300 text-lg leading-relaxed w-full">
-          <p className="font-bold text-white mb-4 text-xl">
+          <h2 className="text-base md:text-lg font-black text-grey mb-4 tracking-[0.2em] ">
             Scheduling personal time could be exhausting
-          </p>
-          <div className="flex justify-center w-full">
-            <ul className="list-disc list-inside space-y-2 text-left text-base md:text-lg inline-block">
-              <li>Texts spiral</li>
-              <li>Context piles up</li>
-              <li>Everyone's overwhelmed</li>
-            </ul>
-          </div>
+          </h2>
+
+          <h2
+            className="font-extrabold text-white mb-6 text-4xl md:text-5xl leading-tight tracking-wide text-center"
+            style={{ textShadow: '0 0 8px rgba(255, 255, 255, 0.7)' }}
+          >
+            whenRUfree is here to help
+          </h2>
+
+          <h2 className="text-base md:text-lg font-black text-gray-300 mb-4 tracking-[0.2em] ">
+            we will do the calendar math — so you don’t have to
+          </h2>
         </section>
 
-        <section className="w-full">
-          <h2 className="text-base md:text-lg font-black text-purple-300 mb-4 tracking-[0.2em] ">
-            whenRUfree does the math—so you don’t have to
-          </h2>
-          <div className="flex justify-center w-full">
-            <ul className="text-left text-base md:text-lg space-y-4 text-gray-100 font-medium">
-              <li className="flex items-center gap-3"><span>🔗</span> Share availability with a link</li>
-              <li className="flex items-center gap-3"><span>⏰</span> Find overlaps automatically</li>
-              <li className="flex items-center gap-3"><span>💬</span> Set preferences easily</li>
-              <li className="flex items-center gap-3"><span>🔒</span> Keep details private</li>
-              <li className="flex items-center gap-3"><span>❌</span> No calendars. No guilt.</li>
-            </ul>
-          </div>
-        </section>
+        <ul className="text-left text-base md:text-lg space-y-6 text-gray-100 font-medium w-full max-w-md">
+          <li className="flex items-center gap-3">
+            <span className="text-xl" role="img" aria-label="Lock">
+              🔒
+            </span>
+            Keep details private
+          </li>
+          <li className="flex items-center gap-3">
+            <span className="text-xl" role="img" aria-label="Clock">
+              ⏰
+            </span>
+            Find overlaps automatically
+          </li>
+          <li className="flex items-center gap-3">
+            <span className="text-xl" role="img" aria-label="Chat bubble">
+              💬
+            </span>
+            Set preferences easily
+          </li>
+          <li className="flex items-center gap-3">
+            <span className="text-xl" role="img" aria-label="One click share">
+              ⚡
+            </span>
+            Share availability with one click
+          </li>
+        </ul>
       </main>
     </div>
   );
