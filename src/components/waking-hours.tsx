@@ -44,13 +44,13 @@ export default function WakingHours() {
   return (
     <section className="mb-8 bg-[#1f1724] rounded-xl p-4 max-w-full">
       {/* Tabs */}
-      <div className="flex gap-3 mb-4 flex-wrap">
+      <div className="flex gap-3 mb-4 flex-wrap justify-center">
         {OPTIONS.map((opt) => (
           <button
             key={opt}
             onClick={() => setOption(opt)}
-            className={`px-4 py-2 rounded-md text-sm font-medium ${
-              option === opt ? 'bg-purple-700 text-white' : 'bg-gray-800 text-gray-300'
+            className={`px-4 py-2 rounded-md text-sm font-medium min-w-[120px] text-center ${
+              option === opt ? 'bg-brandPurpleButton text-white' : 'bg-gray-800 text-gray-300'
             }`}
             aria-pressed={option === opt}
           >
@@ -69,6 +69,7 @@ export default function WakingHours() {
               start={start}
               end={end}
               onChange={(s, e) => handleEntireWeekChange(i, s, e)}
+              className="w-full max-w-md mx-auto"
             />
           ))}
 
@@ -79,12 +80,14 @@ export default function WakingHours() {
               start={weekdaysTime.start}
               end={weekdaysTime.end}
               onChange={(s, e) => setWeekdaysTime({ start: s, end: e })}
+              className="w-full max-w-md mx-auto"
             />
             <TimeSlot
               label="Weekend (Sat–Sun)"
               start={weekendTime.start}
               end={weekendTime.end}
               onChange={(s, e) => setWeekendTime({ start: s, end: e })}
+              className="w-full max-w-md mx-auto"
             />
           </>
         )}

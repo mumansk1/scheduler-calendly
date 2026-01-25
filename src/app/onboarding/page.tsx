@@ -1,14 +1,23 @@
 'use client';
 import React, { useState } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/navigation';
 import WelcomeBanner from '@/components/welcome-banner';
 import WakingHours from '@/components/waking-hours';
 import PreferenceNote from '@/components/preference-note';
 import AvailabilityCard from '@/components/availability-card';
 import Footer from '@/components/footer';
 
+import { sampleAvailability } from '@/data/mock-data'
+
 export default function Onboarding() {
+  const router = useRouter();
   const [preferenceNote, setPreferenceNote] = useState<string>('');
+
+  const handleStart = () => {
+    // Navigate to the main availability view (adjust route if needed)
+    router.push('/availability');
+  };
 
   return (
     <>
@@ -26,6 +35,7 @@ export default function Onboarding() {
           }}
         />
 
+        {/* Frame / centered content */}
         <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 pt-8 pb-12 flex flex-col gap-8 flex-grow">
           <div className="w-full">
             <WelcomeBanner
@@ -74,7 +84,25 @@ export default function Onboarding() {
             <p className="text-gray-300 mb-1 text-xs italic">Click a time slot to cycle through availability:</p>
             <p className="text-gray-300 mb-3 text-xs italic">Not selected → Available → Tentative → Not selected</p>
 
-            <AvailabilityCard className="mt-3" preferenceNote={preferenceNote} />
+            <AvailabilityCard className="mt-3" preferenceNote={preferenceNote} dailyAvailability={sampleAvailability} />
+          </section>
+
+          {/* Step 4: inside the same frame with the other steps */}
+          <section className="w-full">
+            <h3 className="text-lg font-semibold mb-1 text-white">Step 4. You’re all set!</h3>
+            <p className="text-gray-400 mb-4 text-sm">
+              Now that you’ve set your waking hours and preferences, your availability is ready to share. You can always update these later in settings.
+            </p>
+
+            <div className="flex justify-start sm:justify-start">
+              <button
+                onClick={handleStart}
+                className="bg-brandPurpleButton hover:bg-purple-600 rounded py-3 px-6 font-semibold text-white transition"
+                aria-label="Start using whenRUfree"
+              >
+                Start Using whenRUfree
+              </button>
+            </div>
           </section>
 
           <footer className="w-full pt-6 pb-8">

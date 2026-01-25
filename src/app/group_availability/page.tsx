@@ -10,7 +10,7 @@ import { DEFAULT_DAY } from '@/config/defaults'
 
 import { LogOut } from 'lucide-react';
 
-export default function Availability() {
+export default function GroupAvailability() {
   const [preferenceNote, setPreferenceNote] = useState<string>('');
   return (
     <div className="min-h-screen bg-black text-white selection:bg-purple-300/20 font-['Inter',sans-serif] relative overflow-x-hidden">
@@ -49,10 +49,8 @@ export default function Availability() {
       <main className="relative z-10 max-w-7xl mx-auto px-6 mt-12">
         <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-8">
           <section className="w-full">
-            <p className="text-gray-300 mb-1 text-xs italic">To set your availability click a time slot to cycle through availability:</p>
-            <p className="text-gray-300 mb-3 text-xs italic">Not selected → Available → Tentative → Not selected</p>
-          
-            <AvailabilityCard className="mt-3" preferenceNote={preferenceNote} dailyAvailability={DEFAULT_DAY} />
+           Under development
+    
           </section>
         </div>
       </main>

@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { DEFAULT_PRESETS, Preset } from '@/config/defaults';
+import { DEFAULT_PRESETS } from '@/config/defaults';
+import { Preset } from '@/config/types';
 import PreferencePresets from '@/components/preference-presets';
 
 type PreferenceNoteProps = {

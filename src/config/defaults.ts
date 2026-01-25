@@ -1,3 +1,5 @@
+import {DayAvailability, Preset, TimeSlot} from '@/config/types';
+
 export const APP_NAME = 'whenRUfree';
 export const MAX_SELECTION = 4;
 export const DEFAULT_TIMEZONE = 'EST';
@@ -20,15 +22,6 @@ export const UI_STRINGS = {
   ALL_AVAILABLE_SUFFIX: 'when all of you are available',
 };
 
-// defaults.ts
-export type Preset = {
-  id: string;
-  category: string;
-  tag: string;
-  icon: string;
-  description: string;
-};
-
 export const DEFAULT_PRESETS: Preset[] = [
   { id: '1', category: 'Boundaries', tag: 'Hard Stop', icon: '🛑', description: "I have to leave exactly at this time for pickup/nap." },
   { id: '2', category: 'Boundaries', tag: 'Brain Fried', icon: '🧠', description: "I’m social, but my decision-making capacity is zero." },
@@ -41,4 +34,132 @@ export const DEFAULT_PRESETS: Preset[] = [
   { id: '9', category: 'Activity', tag: 'Parking Info', icon: '🚗', description: "Parking is tricky - check the map or give me a call." },
   { id: '10', category: 'Energy', tag: 'Low Battery', icon: '🪫', description: "I need a low-energy hang. Pajamas welcome." },
   { id: '11', category: 'Energy', tag: 'Venting Session', icon: '🗣️', description: "I have things to get off my chest." },
+];
+
+export const DEFAULT_DAY: DayAvailability[] = [
+  {
+    date: '',
+    slots: [
+      {
+        time12h: '12:00 AM – 01:00 AM',
+        time24h: '00:00 – 01:00',
+        status: 'None',
+      },
+      {
+        time12h: '01:00 AM – 02:00 AM',
+        time24h: '01:00 – 02:00',
+        status: 'None',
+      },
+      {
+        time12h: '02:00 AM – 03:00 AM',
+        time24h: '02:00 – 03:00',
+        status: 'None',
+      },
+      {
+        time12h: '03:00 AM – 04:00 AM',
+        time24h: '03:00 – 04:00',
+        status: 'None',
+      },
+      {
+        time12h: '04:00 AM – 05:00 AM',
+        time24h: '04:00 – 05:00',
+        status: 'None',
+      },
+      {
+        time12h: '05:00 AM – 06:00 AM',
+        time24h: '05:00 – 06:00',
+        status: 'None',
+      },
+      {
+        time12h: '06:00 AM – 07:00 AM',
+        time24h: '06:00 – 07:00',
+        status: 'None',
+      },
+      {
+        time12h: '07:00 AM – 08:00 AM',
+        time24h: '07:00 – 08:00',
+        status: 'None',
+      },
+      {
+        time12h: '08:00 AM – 09:00 AM',
+        time24h: '08:00 – 09:00',
+        status: 'None',
+      },
+      {
+        time12h: '09:00 AM – 10:00 AM',
+        time24h: '09:00 – 10:00',
+        status: 'None',
+      },
+      {
+        time12h: '10:00 AM – 11:00 AM',
+        time24h: '10:00 – 11:00',
+        status: 'None',
+      },
+      {
+        time12h: '11:00 AM – 12:00 PM',
+        time24h: '11:00 – 12:00',
+        status: 'None',
+      },
+      {
+        time12h: '12:00 PM – 01:00 PM',
+        time24h: '12:00 – 13:00',
+        status: 'None',
+      },
+      {
+        time12h: '01:00 PM – 02:00 PM',
+        time24h: '13:00 – 14:00',
+        status: 'None',
+      },
+      {
+        time12h: '02:00 PM – 03:00 PM',
+        time24h: '14:00 – 15:00',
+        status: 'None',
+      },
+      {
+        time12h: '03:00 PM – 04:00 PM',
+        time24h: '15:00 – 16:00',
+        status: 'None',
+      },
+      {
+        time12h: '04:00 PM – 05:00 PM',
+        time24h: '16:00 – 17:00',
+        status: 'None',
+      },
+      {
+        time12h: '05:00 PM – 06:00 PM',
+        time24h: '17:00 – 18:00',
+        status: 'None',
+      },
+      {
+        time12h: '06:00 PM – 07:00 PM',
+        time24h: '18:00 – 19:00',
+        status: 'None',
+      },
+      {
+        time12h: '07:00 PM – 08:00 PM',
+        time24h: '19:00 – 20:00',
+        status: 'None',
+      },
+      {
+        time12h: '08:00 PM – 09:00 PM',
+        time24h: '20:00 – 21:00',
+        status: 'None',
+      },
+      {
+        time12h: '09:00 PM – 10:00 PM',
+        time24h: '21:00 – 22:00',
+        status: 'None',
+      },
+      {
+        time12h: '10:00 PM – 11:00 PM',
+        time24h: '22:00 – 23:00',
+        status: 'None',
+      },
+      {
+        time12h: '11:00 PM – 12:00 AM',
+        time24h: '23:00 – 00:00',
+        status: 'None',
+      },
+    ],
+  },
 ];

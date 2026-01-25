@@ -1,3 +1,4 @@
+import {DayAvailability} from '@/config/types';
 export type Slot = { time: string; free: boolean };
 
 /**
@@ -99,5 +100,22 @@ export const PEOPLE: Person[] = [
           free: [10, 11, 15, 16].includes(h),
         }))
       ),
+  },
+];
+
+export const sampleAvailability: DayAvailability[] = [
+  {
+    date: 'Thursday, May 2, 2024',
+    slots: [
+      { time12h: '10:00 AM – 11:30 AM', time24h: '10:00 – 11:30', status: 'Free' },
+      { time12h: '12:30 PM – 02:00 PM',  time24h: '12:30 – 14:00', status: 'Tentative' },
+      { time12h: '07:00 PM – 09:00 PM',   time24h: '19:00 – 21:00', status: 'None' },
+    ],
+  },
+  {
+    date: 'Saturday, May 4, 2024',
+    slots: [
+      { time12h: '02:00 PM – 04:00 PM', time24h: '14:00 – 16:00', status: 'None' },
+    ],
   },
 ];
