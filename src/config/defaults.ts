@@ -157,3 +157,8 @@ export const DEFAULT_DAY: DayAvailability[] = [
     ],
   },
 ];
+
+export const DEFAULT_WAKING_HOURS = {
+  "start": "09:00 AM",
+  "end": "09:30 PM"
+}

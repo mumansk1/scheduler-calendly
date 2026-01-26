@@ -19,6 +19,8 @@ const config: Config = {
         // #6B46C1 Base
         brandPurple: '#20153A',  
         brandPurpleButton: '#514371' ,    //rgb(81, 67, 113) 
+        brandPurpleAvailable: '#37235F',
+        brandPurpleUnavailable: '#20153A',
         brandPurplePanel: '#16181d', 
         brandGray: {
           DEFAULT: '#A0AEC0',

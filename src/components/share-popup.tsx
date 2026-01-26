@@ -9,37 +9,36 @@ type SharePopupProps = {
 
 export default function SharePopup({ onClose, onShareMethod, smsText = '' }: SharePopupProps) {
   const [copyNotice, setCopyNotice] = useState<string | null>(null);
+  const [isCopying, setIsCopying] = useState(false);
 
   const copyToClipboard = async (text: string) => {
     try {
+      setIsCopying(true);
       await navigator.clipboard.writeText(text);
       setCopyNotice('Copied to clipboard');
       setTimeout(() => setCopyNotice(null), 2000);
     } catch (err) {
       setCopyNotice('Copy failed');
       setTimeout(() => setCopyNotice(null), 2000);
+    } finally {
+      setIsCopying(false);
     }
   };
 
   const smsHref = (body: string) => {
-    // Best-effort prefill for many mobile browsers
     return `sms:&body=${encodeURIComponent(body)}`;
   };
 
   const handleTextShare = async () => {
-    // parent should pass the fully-constructed message in smsText
-    const finalMessage = smsText;
+    const finalMessage = smsText || '';
 
-    // copy the full message so the user can paste if the prefill doesn't work
     if (finalMessage) {
       await copyToClipboard(finalMessage);
     }
 
-    // Try to open SMS composer with prefilled body (best-effort)
     try {
       window.location.href = smsHref(finalMessage);
     } catch (err) {
-      // fallback to blank sms composer
       window.location.href = 'sms:';
     }
 
@@ -48,52 +47,91 @@ export default function SharePopup({ onClose, onShareMethod, smsText = '' }: Sha
   };
 
   const handleEmailShare = () => {
+    const subject = encodeURIComponent('My Availability');
+    const body = encodeURIComponent(smsText || '');
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
     onShareMethod('email');
     onClose();
   };
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] px-4 py-6"
       role="dialog"
       aria-modal="true"
       aria-labelledby="share-popup-title"
     >
-      <div className="bg-gray-900 rounded-lg p-6 w-80 max-w-full text-center text-white shadow-lg relative">
-        <h2 id="share-popup-title" className="text-xl font-semibold mb-4">
+      <div className="bg-gray-900 rounded-2xl p-5 sm:p-8 w-full max-w-3xl text-white shadow-2xl relative border border-white/10 max-h-[90vh] overflow-y-auto">
+        <h2 id="share-popup-title" className="text-lg sm:text-2xl font-bold mb-4 text-center">
           Share your availability
         </h2>
 
-        <div className="flex flex-col gap-3">
-          <button
-            onClick={handleEmailShare}
-            className="bg-purple-700 hover:bg-purple-600 rounded py-2 font-semibold"
-          >
-            Share via Email
-          </button>
+        {/* Buttons row */}
+        <div className="mb-4">
+          <div className="flex gap-3">
+            <button
+              onClick={handleEmailShare}
+              className="flex-1 px-4 py-3 bg-purple-600 hover:bg-purple-500 active:scale-[0.98] transition-all rounded-xl font-bold shadow-md text-center"
+              aria-label="Share via email"
+            >
+              Share via Email
+            </button>
 
-          <div>
             <button
               onClick={handleTextShare}
-              className="bg-green-700 hover:bg-green-600 rounded py-2 font-semibold w-full"
+              className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-500 active:scale-[0.98] transition-all rounded-xl font-bold shadow-md text-center"
+              aria-label="Share via text"
             >
               Share via Text
             </button>
-            <p className="mt-2 text-xs text-gray-400 max-w-xs mx-auto">
-              The app link and your schedule will be copied. If your device supports a pre-filled text body the SMS app will open with the message already inserted. If not, just pick a recipient and paste the copied message.
-            </p>
-          </div>
 
+            <button
+              onClick={onClose}
+              className="flex-shrink-0 px-4 py-3 text-gray-300 hover:text-white active:scale-[0.98] transition-all rounded-xl border border-white/5 bg-transparent"
+              aria-label="Cancel"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        {/* Message Preview Header */}
+        <div className="mb-2 px-1">
+          <h3 className="font-semibold text-sm text-gray-300">Message Preview</h3>
+        </div>
+
+        {/* Preview area */}
+        <div className="bg-black/40 rounded-xl p-4 text-sm text-gray-200 min-h-[160px] max-h-[50vh] overflow-auto whitespace-pre-wrap break-words border border-white/5 font-mono leading-relaxed">
+          {smsText ? (
+            <pre className="whitespace-pre-wrap text-sm m-0">{smsText}</pre>
+          ) : (
+            <div className="text-gray-500 italic text-center py-8">
+              No availability selected yet.
+            </div>
+          )}
+        </div>
+
+        {/* Message length and copy text UNDER the preview window */}
+        <div className="flex items-center justify-between mt-3 px-1">
+          <div className="text-xs text-gray-400">
+            {smsText ? (
+              <span>Message length: {smsText.length} characters</span>
+            ) : (
+              <span>Nothing to share</span>
+            )}
+          </div>
           <button
-            onClick={onClose}
-            className="mt-4 text-gray-400 hover:text-gray-200 underline"
+            onClick={() => smsText && copyToClipboard(smsText)}
+            className="text-xs text-purple-300 hover:text-purple-200 underline font-medium"
+            disabled={!smsText || isCopying}
           >
-            Cancel
+            {isCopying ? 'Copying…' : 'Copy text'}
           </button>
         </div>
 
+        {/* Toast Notification */}
         {copyNotice && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-4 py-2 rounded shadow-lg font-semibold">
+          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-full shadow-2xl font-bold text-sm z-[110]">
             {copyNotice}
           </div>
         )}
