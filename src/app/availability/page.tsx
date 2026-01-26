@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { LogOut } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import WelcomeBanner from '@/components/welcome-banner';
 import TabNavigator from '@/components/tab-navigator';
@@ -9,7 +10,6 @@ import AvailabilityCard from '@/components/availability-card';
 
 import { DEFAULT_DAY, DEFAULT_WAKING_HOURS } from '@/config/defaults';
 
-import { LogOut } from 'lucide-react';
 
 export default function Availability() {
   const [preferenceNote, setPreferenceNote] = useState<string>('');
@@ -36,12 +36,12 @@ export default function Availability() {
         />
         
         <button
-  onClick={() => signOut({ callbackUrl: '/' })}
-  className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors text-sm font-medium bg-white/5 hover:bg-white/10 px-2 py-1 rounded-lg border border-white/10 sm:px-3 sm:py-2"
->
-  <LogOut className="w-4 h-4" />
-  <span className="hidden sm:inline">Sign out</span>
-</button>
+          onClick={() => signOut({ callbackUrl: '/' })}
+          className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors text-sm font-medium bg-white/5 hover:bg-white/10 px-2 py-1 rounded-lg border border-white/10 sm:px-3 sm:py-2"
+        >
+        <LogOut className="w-4 h-4" />
+        <span className="hidden sm:inline">Sign out</span>
+        </button>
       </header>
 
       {/* Tab Navigator: Now just the tabs, placed below the header */}

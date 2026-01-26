@@ -1,8 +1,13 @@
+// src/app/onboarding/page.tsx
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Head from 'next/head';
+
+import { LogOut } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
+
+import Head from 'next/head';
 
 import WelcomeBanner from '@/components/welcome-banner';
 import WakingHours from '@/components/waking-hours';
@@ -33,8 +38,6 @@ export default function Onboarding() {
       const res = await fetch('/api/auth/complete-onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // No body required — server will use session to identify the user.
-        // If your environment requires credentials flag, the browser will still send cookies on same-origin.
       });
 
       if (!res.ok) {
@@ -68,13 +71,25 @@ export default function Onboarding() {
           }}
         />
 
+        {/* Top Header: Welcome Banner + Sign Out (match availability page) */}
+        <header className="relative z-30 px-6 py-6 flex justify-between items-center max-w-7xl mx-auto w-full">
+          <WelcomeBanner className="text-gray-300" showTagline={false} />
+
+          <button
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors text-sm font-medium bg-white/5 hover:bg-white/10 px-2 py-1 rounded-lg border border-white/10 sm:px-3 sm:py-2"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Sign out</span>
+          </button>
+        </header>
+
         {/* Frame / centered content */}
         <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 pt-8 pb-12 flex flex-col gap-8 flex-grow">
           <div className="w-full">
-            <WelcomeBanner
-              className="flex-col justify-center text-left text-gray-300"
-              showTagline={false}
-            />
+            {/* Keep the banner above the onboarding copy — WelcomeBanner already rendered in the header;
+                if you want the banner repeated here, uncomment the line below. */}
+            {/* <WelcomeBanner className="flex-col justify-center text-left text-gray-300" showTagline={false} /> */}
           </div>
 
           <div className="w-full">
